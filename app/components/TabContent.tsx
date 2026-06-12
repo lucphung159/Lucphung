@@ -53,30 +53,31 @@ export function TabContent({ news, publicationSections, groupMembers, contact }:
 
   return (
     <div>
-      {/* Tab bar */}
+      {/* Tab bar — segmented control style matching reference */}
       <div
         style={{
-          borderTop: "1px solid var(--border)",
-          borderBottom: "1px solid var(--border)",
-          display: "flex",
+          border: "1px solid var(--border)",
+          borderRadius: 0,
+          display: "grid",
+          gridTemplateColumns: `repeat(${tabs.length}, 1fr)`,
           marginBottom: "2rem",
+          overflow: "hidden",
         }}
       >
-        {tabs.map((t) => (
+        {tabs.map((t, i) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
             style={{
-              flex: 1,
-              padding: "0.6rem 1rem",
+              padding: "0.65rem 1rem",
               fontSize: "0.9rem",
-              fontWeight: tab === t.key ? 600 : 400,
-              color: tab === t.key ? "var(--accent)" : "var(--muted)",
-              background: "none",
+              fontWeight: 400,
+              color: tab === t.key ? "#c0392b" : "#333",
+              background: tab === t.key ? "#f5f5f5" : "#fff",
               border: "none",
-              borderBottom: tab === t.key ? "2px solid var(--accent)" : "2px solid transparent",
+              borderLeft: i > 0 ? "1px solid var(--border)" : "none",
               cursor: "pointer",
-              transition: "all 0.15s",
+              transition: "background 0.12s",
             }}
           >
             {t.label}

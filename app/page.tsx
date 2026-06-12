@@ -16,7 +16,7 @@ interface PageData {
   profile: {
     name: string; title: string; university: string; advisor: string;
     email: string; github: string; scholar: string; linkedin: string;
-    twitter: string; facultyPage: string; bio: string[];
+    twitter: string; facultyPage: string; profileImage: string; bio: string[];
   };
   news: { date: string; type: string; text: string }[];
   publicationSections: {
@@ -124,12 +124,12 @@ export default async function Home() {
             )}
           </div>
 
-          {/* Right: photo */}
-          <div style={{ display: "flex", alignItems: "flex-start" }}>
+          {/* Right: profile photo */}
+          <div style={{ display: "flex", alignItems: "flex-start", flexShrink: 0 }}>
             <div
               style={{
-                width: 160,
-                height: 160,
+                width: 168,
+                height: 168,
                 borderRadius: "50%",
                 overflow: "hidden",
                 background: "var(--highlight)",
@@ -137,13 +137,20 @@ export default async function Home() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                flexShrink: 0,
               }}
             >
-              <svg width="70" height="70" viewBox="0 0 80 80" fill="none">
-                <circle cx="40" cy="30" r="20" fill="#c7d7ea" />
-                <ellipse cx="40" cy="75" rx="30" ry="20" fill="#c7d7ea" />
-              </svg>
+              {profile.profileImage ? (
+                <img
+                  src={profile.profileImage}
+                  alt={profile.name}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              ) : (
+                <svg width="70" height="70" viewBox="0 0 80 80" fill="none">
+                  <circle cx="40" cy="30" r="20" fill="#c7d7ea" />
+                  <ellipse cx="40" cy="75" rx="30" ry="20" fill="#c7d7ea" />
+                </svg>
+              )}
             </div>
           </div>
         </section>

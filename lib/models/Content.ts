@@ -63,6 +63,7 @@ const ContentSchema = new Schema(
       linkedin: { type: String, default: "https://linkedin.com" },
       twitter: { type: String, default: "" },
       facultyPage: { type: String, default: "" },
+      profileImage: { type: String, default: "" }, // base64
       bio: {
         type: [String], default: [
           "I am a PhD student in Computer Science at the University of Technology. My research focuses on natural language processing and machine learning, with particular interest in large language models, efficient fine-tuning, and cross-lingual transfer learning.",

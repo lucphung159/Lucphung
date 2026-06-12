@@ -19,7 +19,7 @@ interface PageContent {
   profile: {
     name: string; title: string; university: string; advisor: string;
     email: string; github: string; scholar: string; linkedin: string;
-    twitter: string; facultyPage: string; bio: string[];
+    twitter: string; facultyPage: string; profileImage: string; bio: string[];
   };
   news: NewsItem[];
   publicationSections: PubSection[];
@@ -28,7 +28,7 @@ interface PageContent {
 }
 
 const defaultContent: PageContent = {
-  profile: { name: "", title: "", university: "", advisor: "", email: "", github: "", scholar: "", linkedin: "", twitter: "", facultyPage: "", bio: [""] },
+  profile: { name: "", title: "", university: "", advisor: "", email: "", github: "", scholar: "", linkedin: "", twitter: "", facultyPage: "", profileImage: "", bio: [""] },
   news: [],
   publicationSections: [],
   groupMembers: [],
@@ -80,6 +80,7 @@ export default function AdminDashboard() {
         linkedin: data.profile?.linkedin || "",
         twitter: data.profile?.twitter || "",
         facultyPage: data.profile?.facultyPage || "",
+        profileImage: data.profile?.profileImage || "",
         bio: data.profile?.bio || [""],
       },
       news: data.news || [],
@@ -271,7 +272,14 @@ export default function AdminDashboard() {
         {tab === "profile" && (
           <div style={card}>
             <h2 style={sectionHeader}>Profile Information</h2>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+
+            {/* Profile photo upload */}
+            <ProfileImageUpload
+              image={content.profile.profileImage}
+              onChange={(v) => setProfile("profileImage", v)}
+            />
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginTop: 20 }}>
               {(["name", "title", "university", "advisor", "email", "facultyPage", "scholar", "github", "linkedin", "twitter"] as const).map((key) => (
                 <Field
                   key={key}
@@ -573,6 +581,58 @@ function MemberCard({ member, index, onUpdate, onRemove }: {
         </button>
       </div>
       <div style={{ marginTop: 8, fontSize: 11, color: "#9ca3af", textAlign: "right" }}>Member #{index + 1}</div>
+    </div>
+  );
+}
+
+function ProfileImageUpload({ image, onChange }: { image: string; onChange: (v: string) => void }) {
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => onChange(ev.target?.result as string);
+    reader.readAsDataURL(file);
+  }
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 20, padding: "16px", background: "#f9fafb", borderRadius: 10, border: "1px solid #e5e7eb" }}>
+      <div
+        onClick={() => fileRef.current?.click()}
+        style={{
+          width: 90, height: 90, borderRadius: "50%", overflow: "hidden",
+          background: "#e5e7eb", border: "2px dashed #c7d7ea",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          cursor: "pointer", flexShrink: 0,
+        }}
+        title="Click to upload"
+      >
+        {image ? (
+          <img src={image} alt="Profile" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        ) : (
+          <span style={{ fontSize: 28 }}>📷</span>
+        )}
+      </div>
+      <div>
+        <div style={{ fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>Profile Photo</div>
+        <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 10 }}>
+          Circular photo displayed on the public page. Stored as base64 in DB.
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button onClick={() => fileRef.current?.click()}
+            style={{ fontSize: 12, padding: "5px 14px", borderRadius: 20, background: "#1e3a5f", color: "#fff", border: "none", cursor: "pointer" }}>
+            {image ? "Change Photo" : "Upload Photo"}
+          </button>
+          {image && (
+            <button onClick={() => onChange("")}
+              style={{ fontSize: 12, padding: "5px 14px", borderRadius: 20, background: "#fee2e2", color: "#b91c1c", border: "none", cursor: "pointer" }}>
+              Remove
+            </button>
+          )}
+        </div>
+      </div>
+      <input ref={fileRef} type="file" accept="image/*" onChange={handleFile} style={{ display: "none" }} />
     </div>
   );
 }
