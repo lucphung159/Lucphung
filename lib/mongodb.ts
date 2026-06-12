@@ -6,22 +6,10 @@ if (!MONGODB_URI) {
   throw new Error("Please define the MONGODB_URI environment variable");
 }
 
-declare global {
-  // eslint-disable-next-line no-var
-  var _mongooseConn: typeof mongoose | null;
-}
-
-let cached = global._mongooseConn;
-
-if (!cached) {
-  global._mongooseConn = null;
-  cached = null;
-}
+let cached: typeof mongoose | null = null;
 
 export async function connectDB() {
   if (cached) return cached;
-
   cached = await mongoose.connect(MONGODB_URI);
-  global._mongooseConn = cached;
   return cached;
 }
