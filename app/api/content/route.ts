@@ -5,12 +5,10 @@ import { verifyToken } from "@/lib/jwt";
 
 export async function GET() {
   await connectDB();
-  let content = await Content.findOne({ type: "page_content" }).lean();
-  if (!content) {
-    content = await Content.create({ type: "page_content" });
-    content = content.toObject();
-  }
-  return NextResponse.json(content);
+  const found = await Content.findOne({ type: "page_content" }).lean();
+  if (found) return NextResponse.json(found);
+  const created = await Content.create({ type: "page_content" });
+  return NextResponse.json(created.toObject());
 }
 
 export async function PUT(req: NextRequest) {
