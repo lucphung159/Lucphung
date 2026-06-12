@@ -7,8 +7,7 @@ if (!MONGODB_URI) {
 }
 
 declare global {
-  // eslint-disable-next-line no-var
-  var _mongooseConn: typeof mongoose | null;
+  var _mongooseConn: typeof mongoose | null; // eslint-disable-line no-var
 }
 
 let cached = global._mongooseConn;

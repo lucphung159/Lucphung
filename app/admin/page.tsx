@@ -1,6 +1,7 @@
 "use client";
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function AdminLogin() {
   const [username, setUsername] = useState("");
@@ -90,7 +91,7 @@ export default function AdminLogin() {
         </form>
 
         <p className="text-center text-xs mt-4" style={{ color: "#9ca3af" }}>
-          <a href="/" style={{ color: "#2d5a8e" }}>← Back to site</a>
+          <Link href="/" style={{ color: "#2d5a8e" }}>← Back to site</Link>
         </p>
       </div>
     </div>
