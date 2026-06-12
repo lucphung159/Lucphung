@@ -1,73 +1,23 @@
-import Image from "next/image";
+import { connectDB } from "@/lib/mongodb";
+import { Content } from "@/lib/models/Content";
 
-const news = [
-  {
-    date: "Jun 2026",
-    type: "talk",
-    text: 'Gave a talk on "Modern AI Applications in Industry" at TechConf 2026.',
-  },
-  {
-    date: "Mar 2026",
-    type: "paper",
-    text: 'New paper accepted at ICML 2026: "Scalable Representation Learning for Large Language Models".',
-  },
-  {
-    date: "Jan 2026",
-    type: "award",
-    text: "Received the Outstanding Researcher Award from XYZ Institute.",
-  },
-  {
-    date: "Oct 2025",
-    type: "misc",
-    text: "Started a new research collaboration with the AI Lab at University of Technology.",
-  },
-  {
-    date: "Jul 2025",
-    type: "paper",
-    text: 'Paper accepted at NeurIPS 2025: "Efficient Fine-tuning of Foundation Models".',
-  },
-];
-
-const publications = [
-  {
-    title: "Scalable Representation Learning for Large Language Models",
-    authors: "Luc Phung, Jane Doe, John Smith",
-    venue: "International Conference on Machine Learning (ICML)",
-    year: "2026",
-    links: [
-      { label: "Paper", href: "#" },
-      { label: "Code", href: "#" },
-    ],
-  },
-  {
-    title: "Efficient Fine-tuning of Foundation Models via Adapter Networks",
-    authors: "Luc Phung, Alice Wang, Bob Chen",
-    venue: "Advances in Neural Information Processing Systems (NeurIPS)",
-    year: "2025",
-    links: [
-      { label: "Paper", href: "#" },
-      { label: "Code", href: "#" },
-      { label: "Poster", href: "#" },
-    ],
-  },
-  {
-    title: "Cross-lingual Transfer in Low-resource Settings",
-    authors: "Luc Phung, Maria Rodriguez",
-    venue: "Annual Meeting of the Association for Computational Linguistics (ACL)",
-    year: "2024",
-    links: [
-      { label: "Paper", href: "#" },
-      { label: "Slides", href: "#" },
-    ],
-  },
-  {
-    title: "Towards Robust Natural Language Understanding with Contrastive Learning",
-    authors: "Luc Phung, Wei Liu, Sarah Kim",
-    venue: "Empirical Methods in Natural Language Processing (EMNLP)",
-    year: "2023",
-    links: [{ label: "Paper", href: "#" }],
-  },
-];
+async function getContent() {
+  await connectDB();
+  let doc = await Content.findOne({ type: "page_content" }).lean() as Record<string, unknown> | null;
+  if (!doc) {
+    const created = await Content.create({ type: "page_content" });
+    doc = created.toObject();
+  }
+  return doc as {
+    profile: {
+      name: string; title: string; university: string; advisor: string;
+      email: string; github: string; scholar: string; linkedin: string; bio: string[];
+    };
+    news: { date: string; type: string; text: string }[];
+    publications: { title: string; authors: string; venue: string; year: string; links: { label: string; href: string }[] }[];
+    contact: { address: string; office: string; email: string };
+  };
+}
 
 const badgeClass: Record<string, string> = {
   paper: "badge-paper",
@@ -83,36 +33,25 @@ const badgeLabel: Record<string, string> = {
   misc: "News",
 };
 
-export default function Home() {
+export const revalidate = 0;
+
+export default async function Home() {
+  const data = await getContent();
+  const { profile, news, publications, contact } = data;
+
   return (
     <div className="min-h-screen bg-white">
       {/* Top Nav */}
-      <header
-        style={{ borderBottom: "1px solid var(--border)", background: "#fff" }}
-        className="sticky top-0 z-10"
-      >
+      <header style={{ borderBottom: "1px solid var(--border)", background: "#fff" }} className="sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
-          <span
-            style={{ color: "var(--accent)", fontWeight: 700, fontSize: "1rem" }}
-          >
-            Luc Phung
+          <span style={{ color: "var(--accent)", fontWeight: 700, fontSize: "1rem" }}>
+            {profile.name}
           </span>
           <nav className="flex gap-6 text-sm" style={{ color: "var(--muted)" }}>
-            <a href="#about" className="hover:text-gray-900 transition-colors">
-              About
-            </a>
-            <a href="#news" className="hover:text-gray-900 transition-colors">
-              News
-            </a>
-            <a
-              href="#publications"
-              className="hover:text-gray-900 transition-colors"
-            >
-              Publications
-            </a>
-            <a href="#contact" className="hover:text-gray-900 transition-colors">
-              Contact
-            </a>
+            <a href="#about" className="hover:text-gray-900 transition-colors">About</a>
+            <a href="#news" className="hover:text-gray-900 transition-colors">News</a>
+            <a href="#publications" className="hover:text-gray-900 transition-colors">Publications</a>
+            <a href="#contact" className="hover:text-gray-900 transition-colors">Contact</a>
           </nav>
         </div>
       </header>
@@ -124,68 +63,34 @@ export default function Home() {
           <aside className="flex flex-col items-center md:items-start gap-4 md:w-56 shrink-0">
             <div
               className="rounded-lg overflow-hidden"
-              style={{
-                width: 180,
-                height: 210,
-                background: "var(--highlight)",
-                border: "1px solid var(--border)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
+              style={{ width: 180, height: 210, background: "var(--highlight)", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center" }}
             >
-              {/* Replace src with your actual photo */}
-              <svg
-                width="80"
-                height="80"
-                viewBox="0 0 80 80"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
+              <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="40" cy="30" r="20" fill="#c7d7ea" />
                 <ellipse cx="40" cy="75" rx="30" ry="20" fill="#c7d7ea" />
               </svg>
             </div>
 
-            {/* Social Links */}
-            <div
-              className="flex flex-col gap-2 text-sm"
-              style={{ color: "var(--muted)" }}
-            >
-              <a
-                href="mailto:lucphung@example.com"
-                className="flex items-center gap-2 hover:text-gray-800"
-              >
-                <EmailIcon /> lucphung@example.com
+            <div className="flex flex-col gap-2 text-sm" style={{ color: "var(--muted)" }}>
+              <a href={`mailto:${profile.email}`} className="flex items-center gap-2 hover:text-gray-800">
+                <EmailIcon /> {profile.email}
               </a>
-              <a
-                href="https://github.com/lucphung159"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 hover:text-gray-800"
-              >
-                <GitHubIcon /> GitHub
-              </a>
-              <a
-                href="https://scholar.google.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 hover:text-gray-800"
-              >
-                <ScholarIcon /> Google Scholar
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 hover:text-gray-800"
-              >
-                <LinkedInIcon /> LinkedIn
-              </a>
-              <a
-                href="/cv.pdf"
-                className="flex items-center gap-2 hover:text-gray-800"
-              >
+              {profile.github && (
+                <a href={profile.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-gray-800">
+                  <GitHubIcon /> GitHub
+                </a>
+              )}
+              {profile.scholar && (
+                <a href={profile.scholar} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-gray-800">
+                  <ScholarIcon /> Google Scholar
+                </a>
+              )}
+              {profile.linkedin && (
+                <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-gray-800">
+                  <LinkedInIcon /> LinkedIn
+                </a>
+              )}
+              <a href="/cv.pdf" className="flex items-center gap-2 hover:text-gray-800">
                 <CVIcon /> CV
               </a>
             </div>
@@ -193,127 +98,90 @@ export default function Home() {
 
           {/* Right: Bio */}
           <div className="flex-1">
-            <h1
-              className="text-3xl font-bold mb-1"
-              style={{ color: "var(--accent)" }}
-            >
-              Luc Phung
+            <h1 className="text-3xl font-bold mb-1" style={{ color: "var(--accent)" }}>
+              {profile.name}
             </h1>
-            <p className="text-base mb-1" style={{ color: "var(--muted)" }}>
-              PhD Student · Department of Computer Science
-            </p>
+            <p className="text-base mb-1" style={{ color: "var(--muted)" }}>{profile.title}</p>
             <p className="text-sm mb-4" style={{ color: "var(--muted)" }}>
-              University of Technology &nbsp;|&nbsp; Advisor: Prof. Jane Doe
+              {profile.university}
+              {profile.advisor && <> &nbsp;|&nbsp; Advisor: {profile.advisor}</>}
             </p>
-
-            <p className="text-sm leading-relaxed mb-3">
-              I am a PhD student in Computer Science at the University of
-              Technology. My research focuses on{" "}
-              <strong>natural language processing</strong> and{" "}
-              <strong>machine learning</strong>, with particular interest in
-              large language models, efficient fine-tuning, and cross-lingual
-              transfer learning.
-            </p>
-            <p className="text-sm leading-relaxed mb-3">
-              I am broadly interested in building AI systems that are
-              efficient, generalizable, and accessible — especially in
-              low-resource settings. I collaborate closely with researchers
-              across industry and academia on both fundamental and applied
-              problems.
-            </p>
-            <p className="text-sm leading-relaxed">
-              Before my PhD, I received my B.Sc. in Computer Science from ABC
-              University, where I worked on sequence modeling and information
-              retrieval.
-            </p>
+            {profile.bio.map((para, i) => (
+              <p key={i} className="text-sm leading-relaxed mb-3">{para}</p>
+            ))}
           </div>
         </section>
 
         {/* News Section */}
-        <section id="news" className="mb-12">
-          <h2 className="section-title">News</h2>
-          <div>
-            {news.map((item, i) => (
-              <div key={i} className="news-item">
-                <span
-                  className="font-medium text-xs pt-0.5"
-                  style={{ color: "var(--muted)" }}
-                >
-                  {item.date}
-                </span>
-                <span>
-                  <span className={`badge ${badgeClass[item.type]}`}>
-                    {badgeLabel[item.type]}
+        {news.length > 0 && (
+          <section id="news" className="mb-12">
+            <h2 className="section-title">News</h2>
+            <div>
+              {news.map((item, i) => (
+                <div key={i} className="news-item">
+                  <span className="font-medium text-xs pt-0.5" style={{ color: "var(--muted)" }}>{item.date}</span>
+                  <span>
+                    <span className={`badge ${badgeClass[item.type] || "badge-misc"}`}>
+                      {badgeLabel[item.type] || "News"}
+                    </span>
+                    {item.text}
                   </span>
-                  {item.text}
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Publications Section */}
-        <section id="publications" className="mb-12">
-          <h2 className="section-title">Publications</h2>
-          <div>
-            {publications.map((pub, i) => (
-              <div key={i} className="publication-entry">
-                <p className="text-sm font-semibold leading-snug mb-1">
-                  {pub.title}
-                </p>
-                <p className="text-sm mb-1" style={{ color: "var(--muted)" }}>
-                  {pub.authors}
-                </p>
-                <p className="text-sm italic mb-1.5" style={{ color: "var(--accent)" }}>
-                  {pub.venue}, {pub.year}
-                </p>
-                <div className="flex gap-2 flex-wrap">
-                  {pub.links.map((link, j) => (
-                    <a
-                      key={j}
-                      href={link.href}
-                      className="text-xs px-2 py-0.5 rounded"
-                      style={{
-                        background: "var(--highlight)",
-                        color: "var(--accent-light)",
-                        border: "1px solid #c7d7ea",
-                        fontWeight: 500,
-                      }}
-                    >
-                      [{link.label}]
-                    </a>
-                  ))}
+        {publications.length > 0 && (
+          <section id="publications" className="mb-12">
+            <h2 className="section-title">Publications</h2>
+            <div>
+              {publications.map((pub, i) => (
+                <div key={i} className="publication-entry">
+                  <p className="text-sm font-semibold leading-snug mb-1">{pub.title}</p>
+                  <p className="text-sm mb-1" style={{ color: "var(--muted)" }}>{pub.authors}</p>
+                  <p className="text-sm italic mb-1.5" style={{ color: "var(--accent)" }}>
+                    {pub.venue}{pub.year && `, ${pub.year}`}
+                  </p>
+                  <div className="flex gap-2 flex-wrap">
+                    {pub.links.map((link, j) => (
+                      <a
+                        key={j}
+                        href={link.href}
+                        className="text-xs px-2 py-0.5 rounded"
+                        style={{ background: "var(--highlight)", color: "var(--accent-light)", border: "1px solid #c7d7ea", fontWeight: 500 }}
+                      >
+                        [{link.label}]
+                      </a>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Contact Section */}
         <section id="contact" className="mb-12">
           <h2 className="section-title">Contact</h2>
           <p className="text-sm" style={{ color: "var(--muted)" }}>
-            Department of Computer Science, University of Technology
-            <br />
-            Office: Room 404, CS Building
-            <br />
-            Email:{" "}
-            <a href="mailto:lucphung@example.com">lucphung@example.com</a>
+            {contact.address && <>{contact.address}<br /></>}
+            {contact.office && <>Office: {contact.office}<br /></>}
+            {contact.email && <>Email: <a href={`mailto:${contact.email}`}>{contact.email}</a></>}
           </p>
         </section>
       </main>
 
-      <footer
-        className="text-center text-xs py-6"
-        style={{ color: "var(--muted)", borderTop: "1px solid var(--border)" }}
-      >
-        © {new Date().getFullYear()} Luc Phung. Built with Next.js.
+      <footer className="text-center text-xs py-6" style={{ color: "var(--muted)", borderTop: "1px solid var(--border)" }}>
+        © {new Date().getFullYear()} {profile.name}. Built with Next.js.
+        &nbsp;·&nbsp;
+        <a href="/admin" style={{ color: "var(--muted)" }}>Admin</a>
       </footer>
     </div>
   );
 }
 
-/* ---- SVG Icons ---- */
 function EmailIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -322,7 +190,6 @@ function EmailIcon() {
     </svg>
   );
 }
-
 function GitHubIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -330,7 +197,6 @@ function GitHubIcon() {
     </svg>
   );
 }
-
 function ScholarIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -338,7 +204,6 @@ function ScholarIcon() {
     </svg>
   );
 }
-
 function LinkedInIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -346,7 +211,6 @@ function LinkedInIcon() {
     </svg>
   );
 }
-
 function CVIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
