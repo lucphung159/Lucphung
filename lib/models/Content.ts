@@ -61,8 +61,10 @@ const ContentSchema = new Schema(
       scholar: { type: String, default: "https://scholar.google.com" },
       twitter: { type: String, default: "" },
       facultyPage: { type: String, default: "" },
+      linkedin: { type: String, default: "" },
       youtube: { type: String, default: "" },
       instagram: { type: String, default: "" },
+      researchGate: { type: String, default: "" },
       profileImage: { type: String, default: "" }, // base64
       bio: {
         type: [String], default: [

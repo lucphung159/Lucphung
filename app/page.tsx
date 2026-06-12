@@ -16,7 +16,8 @@ interface PageData {
   profile: {
     name: string; title: string; university: string; advisor: string;
     email: string; scholar: string; twitter: string; facultyPage: string;
-    youtube: string; instagram: string; profileImage: string; bio: string[];
+    linkedin: string; youtube: string; instagram: string; researchGate: string;
+    profileImage: string; bio: string[];
   };
   news: { date: string; type: string; text: string }[];
   publicationSections: {
@@ -45,8 +46,10 @@ export default async function Home() {
     profile.facultyPage && { label: "Faculty Page", href: profile.facultyPage },
     profile.scholar && { label: "Google Scholar", href: profile.scholar },
     profile.twitter && { label: "X (Twitter)", href: profile.twitter },
+    profile.linkedin && { label: "LinkedIn", href: profile.linkedin },
     profile.youtube && { label: "YouTube", href: profile.youtube },
     profile.instagram && { label: "Instagram", href: profile.instagram },
+    profile.researchGate && { label: "ResearchGate", href: profile.researchGate },
   ].filter(Boolean) as { label: string; href: string }[];
 
   return (

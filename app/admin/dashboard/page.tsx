@@ -19,7 +19,8 @@ interface PageContent {
   profile: {
     name: string; title: string; university: string; advisor: string;
     email: string; scholar: string; twitter: string; facultyPage: string;
-    youtube: string; instagram: string; profileImage: string; bio: string[];
+    linkedin: string; youtube: string; instagram: string; researchGate: string;
+    profileImage: string; bio: string[];
   };
   news: NewsItem[];
   publicationSections: PubSection[];
@@ -29,7 +30,7 @@ interface PageContent {
 }
 
 const defaultContent: PageContent = {
-  profile: { name: "", title: "", university: "", advisor: "", email: "", scholar: "", twitter: "", facultyPage: "", youtube: "", instagram: "", profileImage: "", bio: [""] },
+  profile: { name: "", title: "", university: "", advisor: "", email: "", scholar: "", twitter: "", facultyPage: "", linkedin: "", youtube: "", instagram: "", researchGate: "", profileImage: "", bio: [""] },
   news: [],
   publicationSections: [],
   groupMembers: [],
@@ -80,8 +81,10 @@ export default function AdminDashboard() {
         scholar: data.profile?.scholar || "",
         twitter: data.profile?.twitter || "",
         facultyPage: data.profile?.facultyPage || "",
+        linkedin: data.profile?.linkedin || "",
         youtube: data.profile?.youtube || "",
         instagram: data.profile?.instagram || "",
+        researchGate: data.profile?.researchGate || "",
         profileImage: data.profile?.profileImage || "",
         bio: data.profile?.bio || [""],
       },
@@ -284,15 +287,17 @@ export default function AdminDashboard() {
             />
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginTop: 20 }}>
-              {(["name", "title", "university", "advisor", "email", "facultyPage", "scholar", "twitter", "youtube", "instagram"] as const).map((key) => (
+              {(["name", "title", "university", "advisor", "email", "facultyPage", "scholar", "twitter", "linkedin", "youtube", "instagram", "researchGate"] as const).map((key) => (
                 <Field
                   key={key}
                   label={
                     key === "scholar" ? "Google Scholar URL" :
                     key === "facultyPage" ? "Faculty Page URL" :
                     key === "twitter" ? "X (Twitter) URL" :
+                    key === "linkedin" ? "LinkedIn URL" :
                     key === "youtube" ? "YouTube URL" :
-                    key === "instagram" ? "Instagram URL" : key
+                    key === "instagram" ? "Instagram URL" :
+                    key === "researchGate" ? "ResearchGate URL" : key
                   }
                   value={content.profile[key] as string}
                   onChange={(v) => setProfile(key, v)}
