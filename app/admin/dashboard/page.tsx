@@ -24,6 +24,7 @@ interface PageContent {
   news: NewsItem[];
   publicationSections: PubSection[];
   groupMembers: GroupMember[];
+  openings: string;
   contact: { address: string; office: string; email: string };
 }
 
@@ -32,10 +33,11 @@ const defaultContent: PageContent = {
   news: [],
   publicationSections: [],
   groupMembers: [],
+  openings: "",
   contact: { address: "", office: "", email: "" },
 };
 
-type Tab = "profile" | "news" | "publications" | "group" | "contact";
+type Tab = "profile" | "news" | "publications" | "group" | "openings" | "contact";
 
 const inputStyle = { border: "1px solid #d1d5db", background: "#f9fafb" };
 
@@ -86,6 +88,7 @@ export default function AdminDashboard() {
       news: data.news || [],
       publicationSections: data.publicationSections || [],
       groupMembers: data.groupMembers || [],
+      openings: data.openings || "",
       contact: data.contact || { address: "", office: "", email: "" },
     });
     setLoading(false);
@@ -213,6 +216,7 @@ export default function AdminDashboard() {
     { key: "news", label: "News" },
     { key: "publications", label: "Publications" },
     { key: "group", label: "Group" },
+    { key: "openings", label: "Openings" },
     { key: "contact", label: "Contact" },
   ];
 
@@ -476,6 +480,37 @@ export default function AdminDashboard() {
                 />
               ))}
             </div>
+          </div>
+        )}
+
+        {/* =================== OPENINGS =================== */}
+        {tab === "openings" && (
+          <div style={card}>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 12 }}>
+              <div>
+                <h2 style={{ ...sectionHeader, marginBottom: 4 }}>Openings</h2>
+                <p style={{ fontSize: 12, color: "#6b7280", marginBottom: 0 }}>
+                  Rich content shown on the Openings tab. Supports headings (H2, H3), bold, bullet lists, and hyperlinks.
+                </p>
+              </div>
+            </div>
+            <RichTextEditor
+              value={content.openings}
+              onChange={(v) => setContent((c) => ({ ...c, openings: v }))}
+              placeholder="Write openings content here... (e.g. position descriptions, requirements, how to apply)"
+              minRows={16}
+              toolbar="full"
+            />
+            {content.openings && (
+              <div style={{ marginTop: 16 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: "#374151", marginBottom: 8 }}>Preview</div>
+                <div
+                  className="openings-content"
+                  style={{ border: "1px solid #e5e7eb", borderRadius: 8, padding: "1rem", background: "#fafafa" }}
+                  dangerouslySetInnerHTML={{ __html: content.openings }}
+                />
+              </div>
+            )}
           </div>
         )}
 

@@ -31,6 +31,7 @@ interface PageData {
     name: string; nameHref?: string; role: string; research: string;
     badge?: string; coAdvise?: string; image?: string;
   }[];
+  openings: string;
   contact: { address: string; office: string; email: string };
 }
 
@@ -38,7 +39,7 @@ export const revalidate = 0;
 
 export default async function Home() {
   const data = await getContent();
-  const { profile, news, publicationSections, groupMembers, contact } = data;
+  const { profile, news, publicationSections, groupMembers, openings, contact } = data;
 
   const links = [
     profile.facultyPage && { label: "Faculty Page", href: profile.facultyPage },
@@ -128,8 +129,8 @@ export default async function Home() {
           <div style={{ display: "flex", alignItems: "flex-start", flexShrink: 0 }}>
             <div
               style={{
-                width: 168,
-                height: 168,
+                width: 210,
+                height: 210,
                 borderRadius: "50%",
                 overflow: "hidden",
                 background: "var(--highlight)",
@@ -160,6 +161,7 @@ export default async function Home() {
           news={news || []}
           publicationSections={publicationSections || []}
           groupMembers={groupMembers || []}
+          openings={openings || ""}
           contact={contact || { address: "", office: "", email: "" }}
         />
       </main>

@@ -87,6 +87,10 @@ const ContentSchema = new Schema(
       type: [GroupMemberSchema],
       default: [],
     },
+    openings: {
+      type: String,
+      default: "",
+    },
     contact: {
       address: { type: String, default: "Department of Computer Science, University of Technology" },
       office: { type: String, default: "Room 404, CS Building" },

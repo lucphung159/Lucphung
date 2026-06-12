@@ -26,38 +26,35 @@ interface Props {
   news: NewsItem[];
   publicationSections: PubSection[];
   groupMembers: GroupMember[];
+  openings: string;
   contact: { address: string; office: string; email: string };
 }
 
 const badgeClass: Record<string, string> = {
-  paper: "badge-paper",
-  award: "badge-award",
-  talk: "badge-talk",
-  misc: "badge-misc",
+  paper: "badge-paper", award: "badge-award", talk: "badge-talk", misc: "badge-misc",
 };
 const badgeLabel: Record<string, string> = {
-  paper: "Paper",
-  award: "Award",
-  talk: "Talk",
-  misc: "News",
+  paper: "Paper", award: "Award", talk: "Talk", misc: "News",
 };
 
-export function TabContent({ news, publicationSections, groupMembers, contact }: Props) {
-  const [tab, setTab] = useState<"about" | "publications" | "group">("about");
+type TabKey = "about" | "publications" | "group" | "openings";
 
-  const tabs = [
-    { key: "about" as const, label: "About" },
-    { key: "publications" as const, label: "Publications" },
-    { key: "group" as const, label: "Group" },
+export function TabContent({ news, publicationSections, groupMembers, openings, contact }: Props) {
+  const [tab, setTab] = useState<TabKey>("about");
+
+  const tabs: { key: TabKey; label: string }[] = [
+    { key: "about", label: "About" },
+    { key: "publications", label: "Publications" },
+    { key: "group", label: "Group" },
+    { key: "openings", label: "Openings" },
   ];
 
   return (
     <div>
-      {/* Tab bar — segmented control style matching reference */}
+      {/* Tab bar — segmented control matching reference */}
       <div
         style={{
           border: "1px solid var(--border)",
-          borderRadius: 0,
           display: "grid",
           gridTemplateColumns: `repeat(${tabs.length}, 1fr)`,
           marginBottom: "2rem",
@@ -69,7 +66,7 @@ export function TabContent({ news, publicationSections, groupMembers, contact }:
             key={t.key}
             onClick={() => setTab(t.key)}
             style={{
-              padding: "0.65rem 1rem",
+              padding: "0.65rem 0.5rem",
               fontSize: "0.9rem",
               fontWeight: 400,
               color: tab === t.key ? "#c0392b" : "#333",
@@ -85,28 +82,25 @@ export function TabContent({ news, publicationSections, groupMembers, contact }:
         ))}
       </div>
 
-      {/* About tab */}
+      {/* -------- About -------- */}
       {tab === "about" && (
         <div>
           {news.length > 0 && (
             <section style={{ marginBottom: "2.5rem" }}>
               <h2 className="section-title">News</h2>
-              <div>
-                {news.map((item, i) => (
-                  <div key={i} className="news-item">
-                    <span style={{ color: "var(--muted)", fontWeight: 500, fontSize: "0.85rem" }}>{item.date}</span>
-                    <span>
-                      <span className={`badge ${badgeClass[item.type] || "badge-misc"}`}>
-                        {badgeLabel[item.type] || "News"}
-                      </span>
-                      {item.text}
+              {news.map((item, i) => (
+                <div key={i} className="news-item">
+                  <span style={{ color: "var(--muted)", fontWeight: 500, fontSize: "0.85rem" }}>{item.date}</span>
+                  <span>
+                    <span className={`badge ${badgeClass[item.type] || "badge-misc"}`}>
+                      {badgeLabel[item.type] || "News"}
                     </span>
-                  </div>
-                ))}
-              </div>
+                    {item.text}
+                  </span>
+                </div>
+              ))}
             </section>
           )}
-
           <section style={{ marginBottom: "2.5rem" }}>
             <h2 className="section-title">Contact</h2>
             <p style={{ color: "var(--muted)", fontSize: "0.9rem", lineHeight: 1.8 }}>
@@ -120,7 +114,7 @@ export function TabContent({ news, publicationSections, groupMembers, contact }:
         </div>
       )}
 
-      {/* Publications tab */}
+      {/* -------- Publications -------- */}
       {tab === "publications" && (
         <div style={{ marginBottom: "2.5rem" }}>
           {publicationSections.length === 0 && (
@@ -156,13 +150,8 @@ export function TabContent({ news, publicationSections, groupMembers, contact }:
                         {pub.links.length > 0 && (
                           <span style={{ marginLeft: "0.5rem" }}>
                             {pub.links.map((link, li) => (
-                              <a
-                                key={li}
-                                href={link.href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style={{ color: "var(--accent-light)", marginRight: "0.35rem" }}
-                              >
+                              <a key={li} href={link.href} target="_blank" rel="noopener noreferrer"
+                                style={{ color: "var(--accent-light)", marginRight: "0.35rem" }}>
                                 [{link.label}]
                               </a>
                             ))}
@@ -173,13 +162,8 @@ export function TabContent({ news, publicationSections, groupMembers, contact }:
                     {!pub.venue && pub.links.length > 0 && (
                       <div style={{ marginTop: "0.1rem" }}>
                         {pub.links.map((link, li) => (
-                          <a
-                            key={li}
-                            href={link.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ color: "var(--accent-light)", marginRight: "0.35rem", fontSize: "0.88rem" }}
-                          >
+                          <a key={li} href={link.href} target="_blank" rel="noopener noreferrer"
+                            style={{ color: "var(--accent-light)", marginRight: "0.35rem", fontSize: "0.88rem" }}>
                             [{link.label}]
                           </a>
                         ))}
@@ -193,55 +177,19 @@ export function TabContent({ news, publicationSections, groupMembers, contact }:
         </div>
       )}
 
-      {/* Group tab */}
+      {/* -------- Group -------- */}
       {tab === "group" && (
         <div style={{ marginBottom: "2.5rem" }}>
           {groupMembers.length === 0 && (
             <p style={{ color: "var(--muted)", fontSize: "0.9rem" }}>No group members yet.</p>
           )}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))",
-              gap: "1.25rem",
-            }}
-          >
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))", gap: "1.25rem" }}>
             {groupMembers.map((member, i) => (
-              <div
-                key={i}
-                style={{
-                  border: "1px solid var(--border)",
-                  borderRadius: 12,
-                  padding: "1.25rem 1rem",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  textAlign: "center",
-                  background: "#fff",
-                  boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
-                }}
-              >
-                {/* Photo */}
+              <div key={i} style={{ border: "1px solid var(--border)", borderRadius: 12, padding: "1.25rem 1rem", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", background: "#fff", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
                 <div style={{ position: "relative", marginBottom: "0.75rem" }}>
-                  <div
-                    style={{
-                      width: 100,
-                      height: 100,
-                      borderRadius: "50%",
-                      overflow: "hidden",
-                      background: "var(--highlight)",
-                      border: "2px solid var(--border)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
+                  <div style={{ width: 100, height: 100, borderRadius: "50%", overflow: "hidden", background: "var(--highlight)", border: "2px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     {member.image ? (
-                      <img
-                        src={member.image}
-                        alt={member.name}
-                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                      />
+                      <img src={member.image} alt={member.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                     ) : (
                       <svg width="44" height="44" viewBox="0 0 80 80" fill="none">
                         <circle cx="40" cy="30" r="20" fill="#c7d7ea" />
@@ -250,27 +198,11 @@ export function TabContent({ news, publicationSections, groupMembers, contact }:
                     )}
                   </div>
                   {member.badge && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        bottom: -8,
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        background: "var(--accent)",
-                        color: "#fff",
-                        fontSize: "0.6rem",
-                        fontWeight: 600,
-                        padding: "2px 7px",
-                        borderRadius: 20,
-                        whiteSpace: "nowrap",
-                      }}
-                    >
+                    <div style={{ position: "absolute", bottom: -8, left: "50%", transform: "translateX(-50%)", background: "var(--accent)", color: "#fff", fontSize: "0.6rem", fontWeight: 600, padding: "2px 7px", borderRadius: 20, whiteSpace: "nowrap" }}>
                       {member.badge}
                     </div>
                   )}
                 </div>
-
-                {/* Name */}
                 <div style={{ marginTop: member.badge ? "0.6rem" : 0 }}>
                   {member.nameHref ? (
                     <a href={member.nameHref} target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent-light)", fontWeight: 600, fontSize: "0.95rem" }}>
@@ -280,26 +212,26 @@ export function TabContent({ news, publicationSections, groupMembers, contact }:
                     <span style={{ color: "var(--accent-light)", fontWeight: 600, fontSize: "0.95rem" }}>{member.name}</span>
                   )}
                 </div>
-
-                {/* Role */}
-                {member.role && (
-                  <div style={{ fontSize: "0.78rem", color: "var(--muted)", marginTop: "0.2rem" }}>{member.role}</div>
-                )}
-
-                {/* Co-advise */}
-                {member.coAdvise && (
-                  <div style={{ fontSize: "0.75rem", color: "var(--muted)", marginTop: "0.15rem" }}>{member.coAdvise}</div>
-                )}
-
-                {/* Research */}
-                {member.research && (
-                  <div style={{ fontSize: "0.75rem", color: "var(--muted)", fontStyle: "italic", marginTop: "0.25rem" }}>
-                    {member.research}
-                  </div>
-                )}
+                {member.role && <div style={{ fontSize: "0.78rem", color: "var(--muted)", marginTop: "0.2rem" }}>{member.role}</div>}
+                {member.coAdvise && <div style={{ fontSize: "0.75rem", color: "var(--muted)", marginTop: "0.15rem" }}>{member.coAdvise}</div>}
+                {member.research && <div style={{ fontSize: "0.75rem", color: "var(--muted)", fontStyle: "italic", marginTop: "0.25rem" }}>{member.research}</div>}
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* -------- Openings -------- */}
+      {tab === "openings" && (
+        <div style={{ marginBottom: "2.5rem" }}>
+          {openings ? (
+            <div
+              className="openings-content"
+              dangerouslySetInnerHTML={{ __html: openings }}
+            />
+          ) : (
+            <p style={{ color: "var(--muted)", fontSize: "0.9rem" }}>No openings information yet.</p>
+          )}
         </div>
       )}
     </div>

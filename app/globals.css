@@ -78,3 +78,38 @@ a:hover {
 .badge-award { background: #fef3c7; color: #92400e; }
 .badge-talk  { background: #d1fae5; color: #065f46; }
 .badge-misc  { background: #f3f4f6; color: #374151; }
+
+.openings-content {
+  font-size: 0.92rem;
+  line-height: 1.75;
+  color: #374151;
+}
+.openings-content h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 1.5rem 0 0.5rem;
+}
+.openings-content h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 1.25rem 0 0.4rem;
+}
+.openings-content p {
+  margin-bottom: 0.75rem;
+}
+.openings-content ul, .openings-content ol {
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+.openings-content li {
+  margin-bottom: 0.4rem;
+}
+.openings-content a {
+  color: var(--accent-light);
+}
+.openings-content strong {
+  font-weight: 700;
+  color: #1f2937;
+}
