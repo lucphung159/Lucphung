@@ -58,11 +58,11 @@ const ContentSchema = new Schema(
       university: { type: String, default: "University of Technology" },
       advisor: { type: String, default: "Prof. Jane Doe" },
       email: { type: String, default: "lucphung@example.com" },
-      github: { type: String, default: "https://github.com/lucphung159" },
       scholar: { type: String, default: "https://scholar.google.com" },
-      linkedin: { type: String, default: "https://linkedin.com" },
       twitter: { type: String, default: "" },
       facultyPage: { type: String, default: "" },
+      youtube: { type: String, default: "" },
+      instagram: { type: String, default: "" },
       profileImage: { type: String, default: "" }, // base64
       bio: {
         type: [String], default: [

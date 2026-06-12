@@ -15,8 +15,8 @@ async function getContent() {
 interface PageData {
   profile: {
     name: string; title: string; university: string; advisor: string;
-    email: string; github: string; scholar: string; linkedin: string;
-    twitter: string; facultyPage: string; profileImage: string; bio: string[];
+    email: string; scholar: string; twitter: string; facultyPage: string;
+    youtube: string; instagram: string; profileImage: string; bio: string[];
   };
   news: { date: string; type: string; text: string }[];
   publicationSections: {
@@ -44,9 +44,9 @@ export default async function Home() {
   const links = [
     profile.facultyPage && { label: "Faculty Page", href: profile.facultyPage },
     profile.scholar && { label: "Google Scholar", href: profile.scholar },
-    profile.linkedin && { label: "LinkedIn", href: profile.linkedin },
     profile.twitter && { label: "X (Twitter)", href: profile.twitter },
-    profile.github && { label: "GitHub", href: profile.github },
+    profile.youtube && { label: "YouTube", href: profile.youtube },
+    profile.instagram && { label: "Instagram", href: profile.instagram },
   ].filter(Boolean) as { label: string; href: string }[];
 
   return (

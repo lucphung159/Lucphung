@@ -18,8 +18,8 @@ type GroupMember = {
 interface PageContent {
   profile: {
     name: string; title: string; university: string; advisor: string;
-    email: string; github: string; scholar: string; linkedin: string;
-    twitter: string; facultyPage: string; profileImage: string; bio: string[];
+    email: string; scholar: string; twitter: string; facultyPage: string;
+    youtube: string; instagram: string; profileImage: string; bio: string[];
   };
   news: NewsItem[];
   publicationSections: PubSection[];
@@ -29,7 +29,7 @@ interface PageContent {
 }
 
 const defaultContent: PageContent = {
-  profile: { name: "", title: "", university: "", advisor: "", email: "", github: "", scholar: "", linkedin: "", twitter: "", facultyPage: "", profileImage: "", bio: [""] },
+  profile: { name: "", title: "", university: "", advisor: "", email: "", scholar: "", twitter: "", facultyPage: "", youtube: "", instagram: "", profileImage: "", bio: [""] },
   news: [],
   publicationSections: [],
   groupMembers: [],
@@ -77,11 +77,11 @@ export default function AdminDashboard() {
         university: data.profile?.university || "",
         advisor: data.profile?.advisor || "",
         email: data.profile?.email || "",
-        github: data.profile?.github || "",
         scholar: data.profile?.scholar || "",
-        linkedin: data.profile?.linkedin || "",
         twitter: data.profile?.twitter || "",
         facultyPage: data.profile?.facultyPage || "",
+        youtube: data.profile?.youtube || "",
+        instagram: data.profile?.instagram || "",
         profileImage: data.profile?.profileImage || "",
         bio: data.profile?.bio || [""],
       },
@@ -284,10 +284,16 @@ export default function AdminDashboard() {
             />
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginTop: 20 }}>
-              {(["name", "title", "university", "advisor", "email", "facultyPage", "scholar", "github", "linkedin", "twitter"] as const).map((key) => (
+              {(["name", "title", "university", "advisor", "email", "facultyPage", "scholar", "twitter", "youtube", "instagram"] as const).map((key) => (
                 <Field
                   key={key}
-                  label={key === "scholar" ? "Google Scholar URL" : key === "facultyPage" ? "Faculty Page URL" : key === "twitter" ? "X (Twitter) URL" : key}
+                  label={
+                    key === "scholar" ? "Google Scholar URL" :
+                    key === "facultyPage" ? "Faculty Page URL" :
+                    key === "twitter" ? "X (Twitter) URL" :
+                    key === "youtube" ? "YouTube URL" :
+                    key === "instagram" ? "Instagram URL" : key
+                  }
                   value={content.profile[key] as string}
                   onChange={(v) => setProfile(key, v)}
                 />
