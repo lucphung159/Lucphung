@@ -26,6 +26,7 @@ interface PageContent {
   publicationSections: PubSection[];
   groupMembers: GroupMember[];
   openings: string;
+  blog: string;
   contact: { address: string; office: string; email: string };
 }
 
@@ -35,10 +36,11 @@ const defaultContent: PageContent = {
   publicationSections: [],
   groupMembers: [],
   openings: "",
+  blog: "",
   contact: { address: "", office: "", email: "" },
 };
 
-type Tab = "profile" | "news" | "publications" | "group" | "openings" | "contact";
+type Tab = "profile" | "news" | "publications" | "group" | "openings" | "blog" | "contact";
 
 const inputStyle = { border: "1px solid #d1d5db", background: "#f9fafb" };
 
@@ -92,6 +94,7 @@ export default function AdminDashboard() {
       publicationSections: data.publicationSections || [],
       groupMembers: data.groupMembers || [],
       openings: data.openings || "",
+      blog: data.blog || "",
       contact: data.contact || { address: "", office: "", email: "" },
     });
     setLoading(false);
@@ -218,8 +221,9 @@ export default function AdminDashboard() {
     { key: "profile", label: "Profile" },
     { key: "news", label: "News" },
     { key: "publications", label: "Publications" },
-    { key: "group", label: "Group" },
+    { key: "group", label: "Lab Members" },
     { key: "openings", label: "Openings" },
+    { key: "blog", label: "Blog" },
     { key: "contact", label: "Contact" },
   ];
 
@@ -519,6 +523,35 @@ export default function AdminDashboard() {
                   className="openings-content"
                   style={{ border: "1px solid #e5e7eb", borderRadius: 8, padding: "1rem", background: "#fafafa" }}
                   dangerouslySetInnerHTML={{ __html: content.openings }}
+                />
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* =================== BLOG =================== */}
+        {tab === "blog" && (
+          <div style={card}>
+            <div style={{ marginBottom: 12 }}>
+              <h2 style={{ ...sectionHeader, marginBottom: 4 }}>Blog</h2>
+              <p style={{ fontSize: 12, color: "#6b7280" }}>
+                Rich content shown on the Blog tab. Supports headings, bold, lists, and hyperlinks.
+              </p>
+            </div>
+            <RichTextEditor
+              value={content.blog}
+              onChange={(v) => setContent((c) => ({ ...c, blog: v }))}
+              placeholder="Write blog content here..."
+              minRows={16}
+              toolbar="full"
+            />
+            {content.blog && (
+              <div style={{ marginTop: 16 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: "#374151", marginBottom: 8 }}>Preview</div>
+                <div
+                  className="openings-content"
+                  style={{ border: "1px solid #e5e7eb", borderRadius: 8, padding: "1rem", background: "#fafafa" }}
+                  dangerouslySetInnerHTML={{ __html: content.blog }}
                 />
               </div>
             )}

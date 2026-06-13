@@ -27,6 +27,7 @@ interface Props {
   publicationSections: PubSection[];
   groupMembers: GroupMember[];
   openings: string;
+  blog: string;
   contact: { address: string; office: string; email: string };
 }
 
@@ -37,15 +38,16 @@ const badgeLabel: Record<string, string> = {
   paper: "Paper", award: "Award", talk: "Talk", misc: "News",
 };
 
-type TabKey = "about" | "publications" | "group" | "openings";
+type TabKey = "publications" | "labMembers" | "blog" | "aboutMe" | "openings";
 
-export function TabContent({ news, publicationSections, groupMembers, openings, contact }: Props) {
-  const [tab, setTab] = useState<TabKey>("about");
+export function TabContent({ news, publicationSections, groupMembers, openings, blog, contact }: Props) {
+  const [tab, setTab] = useState<TabKey>("publications");
 
   const tabs: { key: TabKey; label: string }[] = [
-    { key: "about", label: "About" },
     { key: "publications", label: "Publications" },
-    { key: "group", label: "Group" },
+    { key: "labMembers", label: "Lab Members" },
+    { key: "blog", label: "Blog" },
+    { key: "aboutMe", label: "About Me" },
     { key: "openings", label: "Openings" },
   ];
 
@@ -82,8 +84,8 @@ export function TabContent({ news, publicationSections, groupMembers, openings, 
         ))}
       </div>
 
-      {/* -------- About -------- */}
-      {tab === "about" && (
+      {/* -------- About Me -------- */}
+      {tab === "aboutMe" && (
         <div>
           {news.length > 0 && (
             <section style={{ marginBottom: "2.5rem" }}>
@@ -177,8 +179,8 @@ export function TabContent({ news, publicationSections, groupMembers, openings, 
         </div>
       )}
 
-      {/* -------- Group -------- */}
-      {tab === "group" && (
+      {/* -------- Lab Members -------- */}
+      {tab === "labMembers" && (
         <div style={{ marginBottom: "2.5rem" }}>
           {groupMembers.length === 0 && (
             <p style={{ color: "var(--muted)", fontSize: "0.9rem" }}>No group members yet.</p>
@@ -218,6 +220,17 @@ export function TabContent({ news, publicationSections, groupMembers, openings, 
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* -------- Blog -------- */}
+      {tab === "blog" && (
+        <div style={{ marginBottom: "2.5rem" }}>
+          {blog ? (
+            <div className="openings-content" dangerouslySetInnerHTML={{ __html: blog }} />
+          ) : (
+            <p style={{ color: "var(--muted)", fontSize: "0.9rem" }}>No blog posts yet.</p>
+          )}
         </div>
       )}
 

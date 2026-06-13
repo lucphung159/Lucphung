@@ -33,6 +33,7 @@ interface PageData {
     badge?: string; coAdvise?: string; image?: string;
   }[];
   openings: string;
+  blog: string;
   contact: { address: string; office: string; email: string };
 }
 
@@ -40,16 +41,16 @@ export const revalidate = 0;
 
 export default async function Home() {
   const data = await getContent();
-  const { profile, news, publicationSections, groupMembers, openings, contact } = data;
+  const { profile, news, publicationSections, groupMembers, openings, blog, contact } = data;
 
   const links = [
     profile.facultyPage && { label: "Faculty Page", href: profile.facultyPage },
+    profile.researchGate && { label: "ResearchGate", href: profile.researchGate },
     profile.scholar && { label: "Google Scholar", href: profile.scholar },
+    profile.instagram && { label: "Instagram", href: profile.instagram },
     profile.twitter && { label: "X (Twitter)", href: profile.twitter },
     profile.linkedin && { label: "LinkedIn", href: profile.linkedin },
     profile.youtube && { label: "YouTube", href: profile.youtube },
-    profile.instagram && { label: "Instagram", href: profile.instagram },
-    profile.researchGate && { label: "ResearchGate", href: profile.researchGate },
   ].filter(Boolean) as { label: string; href: string }[];
 
   return (
@@ -165,6 +166,7 @@ export default async function Home() {
           publicationSections={publicationSections || []}
           groupMembers={groupMembers || []}
           openings={openings || ""}
+          blog={blog || ""}
           contact={contact || { address: "", office: "", email: "" }}
         />
       </main>
