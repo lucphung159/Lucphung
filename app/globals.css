@@ -168,16 +168,16 @@ a:hover {
   bottom: -9px;
   left: 50%;
   transform: translateX(-50%);
-  max-width: 128px;
+  max-width: none;
   background: var(--accent);
   color: #fff;
-  font-size: 0.68rem;
+  font-size: 0.6rem;
   font-weight: 700;
   line-height: 1.2;
-  padding: 3px 9px;
+  padding: 2px 8px;
   border-radius: 999px;
   text-align: center;
-  white-space: normal;
+  white-space: nowrap;
 }
 
 .member-info {
