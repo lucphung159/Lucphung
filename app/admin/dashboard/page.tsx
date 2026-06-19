@@ -386,6 +386,7 @@ export default function AdminDashboard() {
                   + Add Paragraph
                 </button>
               </div>
+              <p style={{ marginTop: -2, marginBottom: 8, color: "#6b7280", fontSize: 11 }}>Use <code>/n</code> to create a new line on the public page.</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {content.profile.bio.map((p, i) => (
                   <div key={i} style={{ display: "flex", gap: 8 }}>

@@ -12,6 +12,15 @@ async function getContent() {
   return doc as unknown as PageData;
 }
 
+function renderLineBreaks(text: string) {
+  return text.split("/n").map((part, index, parts) => (
+    <span key={`${part}-${index}`}>
+      {part}
+      {index < parts.length - 1 && <br />}
+    </span>
+  ));
+}
+
 interface PageData {
   profile: {
     name: string; headerName?: string; title: string; department: string; university: string; advisor: string;
@@ -131,7 +140,7 @@ export default async function Home() {
               <div style={{ marginTop: "1.25rem" }}>
                 {profile.bio.map((para, i) => (
                   <p key={i} style={{ fontSize: "0.9rem", lineHeight: 1.7, marginBottom: "0.75rem", color: "#374151" }}>
-                    {para}
+                    {renderLineBreaks(para)}
                   </p>
                 ))}
               </div>
