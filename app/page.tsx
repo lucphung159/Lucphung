@@ -12,10 +12,24 @@ async function getContent() {
   return doc as unknown as PageData;
 }
 
+const BOLD_BIO_PHRASE = "Laboratory of Agro-Environmental Engineering";
+
+function renderBioText(text: string) {
+  const pieces = text.split(BOLD_BIO_PHRASE);
+  if (pieces.length === 1) return text;
+
+  return pieces.map((piece, index) => (
+    <span key={`${piece}-${index}`}>
+      {piece}
+      {index < pieces.length - 1 && <strong>{BOLD_BIO_PHRASE}</strong>}
+    </span>
+  ));
+}
+
 function renderLineBreaks(text: string) {
   return text.split("/n").map((part, index, parts) => (
     <span key={`${part}-${index}`}>
-      {part}
+      {renderBioText(part)}
       {index < parts.length - 1 && <br />}
     </span>
   ));
