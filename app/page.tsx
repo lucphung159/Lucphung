@@ -105,10 +105,10 @@ export default async function Home() {
               <p style={{ color: "#374151", fontSize: "0.95rem", marginBottom: "0.2rem" }}>{profile.title}</p>
             )}
             {profile.department && (
-              <p style={{ color: "var(--muted)", fontSize: "0.9rem", marginBottom: "0.1rem" }}>{profile.department}</p>
+              <p style={{ color: "var(--muted)", fontSize: "0.9rem", fontWeight: 700, marginBottom: "0.1rem" }}>{profile.department}</p>
             )}
             {profile.university && (
-              <p style={{ color: "var(--muted)", fontSize: "0.9rem", marginBottom: "0.75rem" }}>
+              <p style={{ color: "var(--muted)", fontSize: "0.9rem", fontWeight: 700, marginBottom: "0.75rem" }}>
                 {profile.university}
                 {profile.advisor && <> &nbsp;|&nbsp; Advisor: {profile.advisor}</>}
               </p>
