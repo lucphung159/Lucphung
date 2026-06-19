@@ -197,10 +197,19 @@ export default function AdminDashboard() {
 
   // Publication section helpers
   function addSection() {
-    setContent((c) => ({ ...c, publicationSections: [...c.publicationSections, { title: "New Section", publicationsList: [] }] }));
+    setContent((c) => ({ ...c, publicationSections: [{ title: "New Section", publicationsList: [] }, ...c.publicationSections] }));
   }
   function removeSection(si: number) {
     setContent((c) => ({ ...c, publicationSections: c.publicationSections.filter((_, j) => j !== si) }));
+  }
+  function moveSection(fromIndex: number, toIndex: number) {
+    if (fromIndex === toIndex) return;
+    setContent((c) => {
+      const publicationSections = [...c.publicationSections];
+      const [moved] = publicationSections.splice(fromIndex, 1);
+      publicationSections.splice(toIndex, 0, moved);
+      return { ...c, publicationSections };
+    });
   }
   function setSectionTitle(si: number, val: string) {
     setContent((c) => {
@@ -512,8 +521,31 @@ export default function AdminDashboard() {
               </div>
             )}
             {content.publicationSections.map((section, si) => (
-              <div key={si} style={{ ...card, marginBottom: 20 }}>
+              <div
+                key={si}
+                onDragOver={(event: DragEvent<HTMLDivElement>) => {
+                  event.preventDefault();
+                  event.dataTransfer.dropEffect = "move";
+                }}
+                onDrop={(event: DragEvent<HTMLDivElement>) => {
+                  event.preventDefault();
+                  const fromIndex = Number(event.dataTransfer.getData("text/publication-section-index"));
+                  if (!Number.isNaN(fromIndex)) moveSection(fromIndex, si);
+                }}
+                style={{ ...card, marginBottom: 20 }}
+              >
                 <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 14 }}>
+                  <div
+                    draggable
+                    onDragStart={(event: DragEvent<HTMLDivElement>) => {
+                      event.dataTransfer.setData("text/publication-section-index", String(si));
+                      event.dataTransfer.effectAllowed = "move";
+                    }}
+                    title="Drag to reorder section"
+                    style={{ alignSelf: "stretch", display: "flex", alignItems: "center", color: "#9ca3af", fontSize: 22, cursor: "grab", padding: "0 2px", userSelect: "none" }}
+                  >
+                    ≡
+                  </div>
                   <input
                     value={section.title}
                     onChange={(e) => setSectionTitle(si, e.target.value)}
