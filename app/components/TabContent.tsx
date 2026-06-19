@@ -29,6 +29,7 @@ interface Props {
   openings: string;
   blog: string;
   contact: { address: string; office: string; email: string };
+  tabOrder?: TabItem[];
 }
 
 const badgeClass: Record<string, string> = {
@@ -39,17 +40,36 @@ const badgeLabel: Record<string, string> = {
 };
 
 type TabKey = "publications" | "labMembers" | "blog" | "aboutMe" | "openings";
+type TabItem = { key: TabKey; label: string };
 
-export function TabContent({ news, publicationSections, groupMembers, openings, blog, contact }: Props) {
-  const [tab, setTab] = useState<TabKey>("publications");
+const defaultTabs: TabItem[] = [
+  { key: "publications", label: "Publications" },
+  { key: "labMembers", label: "Lab Members" },
+  { key: "blog", label: "Blog" },
+  { key: "aboutMe", label: "About Me" },
+  { key: "openings", label: "Openings" },
+];
 
-  const tabs: { key: TabKey; label: string }[] = [
-    { key: "publications", label: "Publications" },
-    { key: "labMembers", label: "Lab Members" },
-    { key: "blog", label: "Blog" },
-    { key: "aboutMe", label: "About Me" },
-    { key: "openings", label: "Openings" },
+function normalizeTabs(tabOrder?: TabItem[]) {
+  const seen = new Set<TabKey>();
+  const validKeys = new Set(defaultTabs.map((t) => t.key));
+  const ordered = (tabOrder || []).filter((t): t is TabItem => {
+    if (!validKeys.has(t.key) || seen.has(t.key)) return false;
+    seen.add(t.key);
+    return true;
+  });
+  return [
+    ...ordered.map((tab) => ({
+      key: tab.key,
+      label: tab.label || defaultTabs.find((defaultTab) => defaultTab.key === tab.key)?.label || tab.key,
+    })),
+    ...defaultTabs.filter((tab) => !seen.has(tab.key)),
   ];
+}
+
+export function TabContent({ news, publicationSections, groupMembers, openings, blog, contact, tabOrder }: Props) {
+  const tabs = normalizeTabs(tabOrder);
+  const [tab, setTab] = useState<TabKey>(tabs[0]?.key || "publications");
 
   return (
     <div>

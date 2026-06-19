@@ -1,4 +1,5 @@
 "use client";
+import type { DragEvent } from "react";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { RichTextEditor } from "@/app/components/RichTextEditor";
@@ -14,6 +15,16 @@ type GroupMember = {
   name: string; nameHref: string; role: string; research: string;
   badge: string; coAdvise: string; image: string;
 };
+type PublicTabKey = "publications" | "labMembers" | "blog" | "aboutMe" | "openings";
+type PublicTabItem = { key: PublicTabKey; label: string };
+
+const defaultPublicTabs: PublicTabItem[] = [
+  { key: "publications", label: "Publications" },
+  { key: "labMembers", label: "Lab Members" },
+  { key: "blog", label: "Blog" },
+  { key: "aboutMe", label: "About Me" },
+  { key: "openings", label: "Openings" },
+];
 
 interface PageContent {
   profile: {
@@ -25,6 +36,7 @@ interface PageContent {
   news: NewsItem[];
   publicationSections: PubSection[];
   groupMembers: GroupMember[];
+  tabOrder: PublicTabItem[];
   openings: string;
   blog: string;
   contact: { address: string; office: string; email: string };
@@ -35,12 +47,13 @@ const defaultContent: PageContent = {
   news: [],
   publicationSections: [],
   groupMembers: [],
+  tabOrder: defaultPublicTabs,
   openings: "",
   blog: "",
   contact: { address: "", office: "", email: "" },
 };
 
-type Tab = "profile" | "news" | "publications" | "group" | "openings" | "blog" | "contact";
+type Tab = "profile" | "news" | "publications" | "group" | "mainTabs" | "openings" | "blog" | "contact";
 
 const inputStyle = { border: "1px solid #d1d5db", background: "#f9fafb" };
 
@@ -59,6 +72,24 @@ function Field({ label, value, onChange, placeholder, type = "text" }: {
       />
     </div>
   );
+}
+
+function normalizePublicTabs(tabOrder?: PublicTabItem[]) {
+  const seen = new Set<PublicTabKey>();
+  const validKeys = new Set(defaultPublicTabs.map((tab) => tab.key));
+  const ordered = (tabOrder || []).filter((tab): tab is PublicTabItem => {
+    if (!validKeys.has(tab.key) || seen.has(tab.key)) return false;
+    seen.add(tab.key);
+    return true;
+  });
+
+  return [
+    ...ordered.map((tab) => ({
+      key: tab.key,
+      label: tab.label || defaultPublicTabs.find((defaultTab) => defaultTab.key === tab.key)?.label || tab.key,
+    })),
+    ...defaultPublicTabs.filter((tab) => !seen.has(tab.key)),
+  ];
 }
 
 export default function AdminDashboard() {
@@ -93,6 +124,7 @@ export default function AdminDashboard() {
       news: data.news || [],
       publicationSections: data.publicationSections || [],
       groupMembers: data.groupMembers || [],
+      tabOrder: normalizePublicTabs(data.tabOrder),
       openings: data.openings || "",
       blog: data.blog || "",
       contact: data.contact || { address: "", office: "", email: "" },
@@ -209,6 +241,29 @@ export default function AdminDashboard() {
   }
   function removeMember(i: number) { setContent((c) => ({ ...c, groupMembers: c.groupMembers.filter((_, j) => j !== i) })); }
 
+  // Public tab order helpers
+  function movePublicTab(fromIndex: number, toIndex: number) {
+    if (fromIndex === toIndex) return;
+    setContent((c) => {
+      const tabOrder = [...c.tabOrder];
+      const [moved] = tabOrder.splice(fromIndex, 1);
+      tabOrder.splice(toIndex, 0, moved);
+      return { ...c, tabOrder };
+    });
+  }
+
+  function setPublicTabLabel(index: number, label: string) {
+    setContent((c) => {
+      const tabOrder = [...c.tabOrder];
+      tabOrder[index] = { ...tabOrder[index], label };
+      return { ...c, tabOrder };
+    });
+  }
+
+  function resetPublicTabs() {
+    setContent((c) => ({ ...c, tabOrder: defaultPublicTabs }));
+  }
+
   if (loading) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f0f4f8" }}>
@@ -222,6 +277,7 @@ export default function AdminDashboard() {
     { key: "news", label: "News" },
     { key: "publications", label: "Publications" },
     { key: "group", label: "Lab Members" },
+    { key: "mainTabs", label: "Main Tabs" },
     { key: "openings", label: "Openings" },
     { key: "blog", label: "Blog" },
     { key: "contact", label: "Contact" },
@@ -493,6 +549,96 @@ export default function AdminDashboard() {
                   onUpdate={(key, val) => setMember(i, key, val)}
                   onRemove={() => removeMember(i)}
                 />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* =================== MAIN TABS =================== */}
+        {tab === "mainTabs" && (
+          <div style={card}>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 18 }}>
+              <div>
+                <h2 style={{ ...sectionHeader, marginBottom: 4 }}>Main Page Tab Order</h2>
+                <p style={{ fontSize: 12, color: "#6b7280", margin: 0 }}>
+                  Drag tabs into the order you want on the public homepage, then save changes.
+                </p>
+              </div>
+              <button
+                onClick={resetPublicTabs}
+                style={{ fontSize: 12, padding: "6px 12px", borderRadius: 8, background: "#f3f4f6", color: "#4b5563", border: "1px solid #d1d5db", cursor: "pointer", whiteSpace: "nowrap" }}
+              >
+                Reset Order
+              </button>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {content.tabOrder.map((item, index) => (
+                <div
+                  key={item.key}
+                  draggable
+                  onDragStart={(event: DragEvent<HTMLDivElement>) => {
+                    event.dataTransfer.setData("text/plain", String(index));
+                    event.dataTransfer.effectAllowed = "move";
+                  }}
+                  onDragOver={(event: DragEvent<HTMLDivElement>) => {
+                    event.preventDefault();
+                    event.dataTransfer.dropEffect = "move";
+                  }}
+                  onDrop={(event: DragEvent<HTMLDivElement>) => {
+                    event.preventDefault();
+                    const fromIndex = Number(event.dataTransfer.getData("text/plain"));
+                    if (!Number.isNaN(fromIndex)) movePublicTab(fromIndex, index);
+                  }}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "44px 1fr 1.4fr",
+                    gap: 12,
+                    alignItems: "center",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: 10,
+                    background: "#fff",
+                    padding: "10px 12px",
+                    cursor: "grab",
+                  }}
+                >
+                  <span
+                    title="Drag to reorder"
+                    style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: 8, background: "#f0f4f8", color: "#6b7280", fontSize: 18, lineHeight: 1 }}
+                  >
+                    ≡
+                  </span>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#1e3a5f" }}>{index + 1}. {item.label}</div>
+                    <div style={{ fontSize: 11, color: "#9ca3af" }}>{item.key}</div>
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "#374151", marginBottom: 3 }}>Public Label</label>
+                    <input
+                      value={item.label}
+                      onChange={(event) => setPublicTabLabel(index, event.target.value)}
+                      style={{ ...inputStyle, width: "100%", padding: "6px 10px", borderRadius: 8, fontSize: 12, outline: "none" }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ marginTop: 18, border: "1px solid #e5e7eb", borderRadius: 10, overflow: "hidden", display: "grid", gridTemplateColumns: `repeat(${content.tabOrder.length}, 1fr)` }}>
+              {content.tabOrder.map((item, index) => (
+                <div
+                  key={item.key}
+                  style={{
+                    padding: "10px 8px",
+                    textAlign: "center",
+                    fontSize: 12,
+                    color: index === 0 ? "#c0392b" : "#333",
+                    background: index === 0 ? "#f5f5f5" : "#fff",
+                    borderLeft: index > 0 ? "1px solid #e5e7eb" : "none",
+                  }}
+                >
+                  {item.label}
+                </div>
               ))}
             </div>
           </div>

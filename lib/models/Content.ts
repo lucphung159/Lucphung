@@ -49,6 +49,18 @@ const GroupMemberSchema = new Schema({
   image: { type: String, default: "" }, // base64
 });
 
+const TabOrderItemSchema = new Schema(
+  {
+    key: {
+      type: String,
+      enum: ["publications", "labMembers", "blog", "aboutMe", "openings"],
+      required: true,
+    },
+    label: { type: String, default: "" },
+  },
+  { _id: false }
+);
+
 const ContentSchema = new Schema(
   {
     type: { type: String, default: "page_content", unique: true },
@@ -96,6 +108,16 @@ const ContentSchema = new Schema(
     blog: {
       type: String,
       default: "",
+    },
+    tabOrder: {
+      type: [TabOrderItemSchema],
+      default: [
+        { key: "publications", label: "Publications" },
+        { key: "labMembers", label: "Lab Members" },
+        { key: "blog", label: "Blog" },
+        { key: "aboutMe", label: "About Me" },
+        { key: "openings", label: "Openings" },
+      ],
     },
     contact: {
       address: { type: String, default: "Department of Computer Science, University of Technology" },

@@ -32,6 +32,10 @@ interface PageData {
     name: string; nameHref?: string; role: string; research: string;
     badge?: string; coAdvise?: string; image?: string;
   }[];
+  tabOrder?: {
+    key: "publications" | "labMembers" | "blog" | "aboutMe" | "openings";
+    label: string;
+  }[];
   openings: string;
   blog: string;
   contact: { address: string; office: string; email: string };
@@ -41,7 +45,7 @@ export const revalidate = 0;
 
 export default async function Home() {
   const data = await getContent();
-  const { profile, news, publicationSections, groupMembers, openings, blog, contact } = data;
+  const { profile, news, publicationSections, groupMembers, tabOrder, openings, blog, contact } = data;
 
   const links = [
     profile.facultyPage && { label: "Faculty Page", href: profile.facultyPage },
@@ -168,6 +172,7 @@ export default async function Home() {
           openings={openings || ""}
           blog={blog || ""}
           contact={contact || { address: "", office: "", email: "" }}
+          tabOrder={tabOrder}
         />
       </main>
 
