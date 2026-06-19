@@ -151,16 +151,6 @@ export default async function Home() {
               </div>
             )}
 
-            {/* Bio */}
-            {profile.bio?.length > 0 && (
-              <div style={{ marginTop: "1.25rem" }}>
-                {profile.bio.map((para, i) => (
-                  <p key={i} style={{ fontSize: "0.9rem", lineHeight: 1.7, marginBottom: "0.75rem", color: "#374151" }}>
-                    {renderLineBreaks(para)}
-                  </p>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* Right: profile photo */}
@@ -193,6 +183,17 @@ export default async function Home() {
             </div>
           </div>
         </section>
+
+        {/* Bio */}
+        {profile.bio?.length > 0 && (
+          <section style={{ marginBottom: "2.5rem" }}>
+            {profile.bio.map((para, i) => (
+              <p key={i} style={{ fontSize: "0.9rem", lineHeight: 1.7, marginBottom: "0.75rem", color: "#374151" }}>
+                {renderLineBreaks(para)}
+              </p>
+            ))}
+          </section>
+        )}
 
         {/* Tabbed content */}
         <TabContent
