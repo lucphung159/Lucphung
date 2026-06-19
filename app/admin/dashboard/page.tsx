@@ -271,6 +271,15 @@ export default function AdminDashboard() {
     setContent((c) => ({ ...c, groupMembers: [...c.groupMembers, { name: "", nameHref: "", role: "", research: "", badge: "", coAdvise: "", groupSection: "currentStudents", image: "" }] }));
   }
   function removeMember(i: number) { setContent((c) => ({ ...c, groupMembers: c.groupMembers.filter((_, j) => j !== i) })); }
+  function moveMember(fromIndex: number, toIndex: number) {
+    if (fromIndex === toIndex) return;
+    setContent((c) => {
+      const groupMembers = [...c.groupMembers];
+      const [moved] = groupMembers.splice(fromIndex, 1);
+      groupMembers.splice(toIndex, 0, moved);
+      return { ...c, groupMembers };
+    });
+  }
 
   // Public tab order helpers
   function movePublicTab(fromIndex: number, toIndex: number) {
@@ -608,6 +617,7 @@ export default function AdminDashboard() {
                   index={i}
                   onUpdate={(key, val) => setMember(i, key, val)}
                   onRemove={() => removeMember(i)}
+                  onMove={moveMember}
                 />
               ))}
             </div>
@@ -798,11 +808,12 @@ export default function AdminDashboard() {
   );
 }
 
-function MemberCard({ member, index, onUpdate, onRemove }: {
+function MemberCard({ member, index, onUpdate, onRemove, onMove }: {
   member: GroupMember;
   index: number;
   onUpdate: (key: keyof GroupMember, val: string) => void;
   onRemove: () => void;
+  onMove: (fromIndex: number, toIndex: number) => void;
 }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const inputStyle = { border: "1px solid #d1d5db", background: "#f9fafb" };
@@ -816,8 +827,30 @@ function MemberCard({ member, index, onUpdate, onRemove }: {
   }
 
   return (
-    <div style={{ background: "#fff", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)", padding: "1.25rem" }}>
+    <div
+      onDragOver={(e: DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+      }}
+      onDrop={(e: DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        const fromIndex = Number(e.dataTransfer.getData("text/member-index"));
+        if (!Number.isNaN(fromIndex)) onMove(fromIndex, index);
+      }}
+      style={{ background: "#fff", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)", padding: "1.25rem" }}
+    >
       <div style={{ display: "flex", gap: "1.25rem", alignItems: "flex-start" }}>
+        <div
+          draggable
+          onDragStart={(e: DragEvent<HTMLDivElement>) => {
+            e.dataTransfer.setData("text/member-index", String(index));
+            e.dataTransfer.effectAllowed = "move";
+          }}
+          title="Drag to reorder"
+          style={{ alignSelf: "stretch", display: "flex", alignItems: "center", color: "#9ca3af", fontSize: 22, cursor: "grab", padding: "0 2px", userSelect: "none" }}
+        >
+          ≡
+        </div>
         {/* Photo */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, flexShrink: 0 }}>
           <div
