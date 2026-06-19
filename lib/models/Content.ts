@@ -1,4 +1,5 @@
 import { Schema, model, models } from "mongoose";
+import { getDefaultPublicationSections } from "@/lib/publicationData";
 
 const LinkSchema = new Schema(
   { label: String, href: String },
@@ -106,7 +107,7 @@ const ContentSchema = new Schema(
     },
     publicationSections: {
       type: [PubSectionSchema],
-      default: [],
+      default: getDefaultPublicationSections,
     },
     groupMembers: {
       type: [GroupMemberSchema],

@@ -1,13 +1,23 @@
 import { connectDB } from "@/lib/mongodb";
 import { Content } from "@/lib/models/Content";
 import { TabContent } from "@/app/components/TabContent";
+import { getDefaultPublicationSections, needsPublicationSeed } from "@/lib/publicationData";
 
 async function getContent() {
   await connectDB();
   let doc = await Content.findOne({ type: "page_content" }).lean() as Record<string, unknown> | null;
   if (!doc) {
-    const created = await Content.create({ type: "page_content" });
+    const created = await Content.create({
+      type: "page_content",
+      publicationSections: getDefaultPublicationSections(),
+    });
     doc = created.toObject();
+  } else if (needsPublicationSeed(doc.publicationSections)) {
+    doc = await Content.findOneAndUpdate(
+      { type: "page_content" },
+      { $set: { publicationSections: getDefaultPublicationSections() } },
+      { new: true }
+    ).lean() as Record<string, unknown> | null;
   }
   return doc as unknown as PageData;
 }
