@@ -91,7 +91,7 @@ export default async function Home() {
   ].filter(Boolean) as { label: string; href: string }[];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div id="top" className="min-h-screen bg-white">
       {/* Top Nav */}
       <header style={{ borderBottom: "1px solid var(--border)", background: "#fff" }} className="sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-6 py-3 flex items-center justify-between">
@@ -104,7 +104,7 @@ export default async function Home() {
         </div>
       </header>
 
-      <main id="top" className="max-w-4xl mx-auto px-6 py-10">
+      <main className="max-w-4xl mx-auto px-6 py-10">
         {/* Profile header */}
         <section style={{ display: "flex", gap: "2.5rem", marginBottom: "2rem", flexWrap: "wrap" }}>
           {/* Left: text */}
