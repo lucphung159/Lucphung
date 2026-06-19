@@ -428,13 +428,18 @@ export default function AdminDashboard() {
                   + Add Paragraph
                 </button>
               </div>
-              <p style={{ marginTop: -2, marginBottom: 8, color: "#6b7280", fontSize: 11 }}>Use <code>/n</code> to create a new line on the public page.</p>
+              <p style={{ marginTop: -2, marginBottom: 8, color: "#6b7280", fontSize: 11 }}>Use the toolbar for formatting. Use <code>/n</code> to create a new line on the public page.</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {content.profile.bio.map((p, i) => (
                   <div key={i} style={{ display: "flex", gap: 8 }}>
-                    <textarea value={p} onChange={(e) => setBio(i, e.target.value)} rows={3}
-                      style={{ ...inputStyle, flex: 1, padding: "8px 12px", borderRadius: 8, fontSize: 13, outline: "none", resize: "none" }}
-                      placeholder={`Paragraph ${i + 1}...`} />
+                    <div style={{ flex: 1 }}>
+                      <RichTextEditor
+                        value={p}
+                        onChange={(v) => setBio(i, v)}
+                        placeholder={`Paragraph ${i + 1}...`}
+                        minRows={3}
+                      />
+                    </div>
                     <button onClick={() => setContent((c) => ({ ...c, profile: { ...c.profile, bio: c.profile.bio.filter((_, j) => j !== i) } }))}
                       style={{ fontSize: 12, padding: "4px 8px", borderRadius: 6, background: "#fee2e2", color: "#b91c1c", border: "none", cursor: "pointer", alignSelf: "flex-start" }}>✕</button>
                   </div>
@@ -453,14 +458,13 @@ export default function AdminDashboard() {
                 Short introduction shown before News and Contact on the public {publicTabLabel("aboutMe")} tab.
               </p>
             </div>
-            <textarea
+            <RichTextEditor
               value={content.aboutIntro}
-              onChange={(e) => setContent((c) => ({ ...c, aboutIntro: e.target.value }))}
-              rows={5}
+              onChange={(v) => setContent((c) => ({ ...c, aboutIntro: v }))}
               placeholder="Write a short introduction..."
-              style={{ ...inputStyle, width: "100%", padding: "9px 12px", borderRadius: 8, fontSize: 13, outline: "none", resize: "vertical", lineHeight: 1.6 }}
+              minRows={5}
             />
-            <p style={{ marginTop: 6, color: "#6b7280", fontSize: 11 }}>Use <code>/n</code> to create a new line on the public page.</p>
+            <p style={{ marginTop: 6, color: "#6b7280", fontSize: 11 }}>Use the toolbar for formatting. Use <code>/n</code> to create a new line on the public page.</p>
           </div>
         )}
 
@@ -494,9 +498,13 @@ export default function AdminDashboard() {
                       </div>
                       <div>
                         <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#374151", marginBottom: 4 }}>Text</label>
-                        <textarea value={item.text} onChange={(e) => setNews(i, "text", e.target.value)} rows={2}
-                          style={{ ...inputStyle, width: "100%", padding: "7px 12px", borderRadius: 8, fontSize: 13, outline: "none", resize: "none" }} />
-                        <p style={{ marginTop: 4, color: "#6b7280", fontSize: 11 }}>Use <code>/n</code> to create a new line on the public page.</p>
+                        <RichTextEditor
+                          value={item.text}
+                          onChange={(v) => setNews(i, "text", v)}
+                          placeholder="News text..."
+                          minRows={2}
+                        />
+                        <p style={{ marginTop: 4, color: "#6b7280", fontSize: 11 }}>Use the toolbar for formatting. Use <code>/n</code> to create a new line on the public page.</p>
                       </div>
                     </div>
                     <button onClick={() => removeNews(i)} style={{ marginTop: 20, fontSize: 12, padding: "4px 8px", borderRadius: 6, background: "#fee2e2", color: "#b91c1c", border: "none", cursor: "pointer" }}>✕</button>
@@ -784,14 +792,13 @@ export default function AdminDashboard() {
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <div>
                 <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#374151", marginBottom: 4 }}>address</label>
-                <textarea
+                <RichTextEditor
                   value={content.contact.address}
-                  onChange={(e) => setContent((c) => ({ ...c, contact: { ...c.contact, address: e.target.value } }))}
-                  rows={3}
+                  onChange={(v) => setContent((c) => ({ ...c, contact: { ...c.contact, address: v } }))}
                   placeholder="Use /n where you want a new line"
-                  style={{ ...inputStyle, width: "100%", padding: "7px 12px", borderRadius: 8, fontSize: 13, outline: "none", resize: "vertical" }}
+                  minRows={3}
                 />
-                <p style={{ marginTop: 4, color: "#6b7280", fontSize: 11 }}>Use <code>/n</code> to create a new line on the public page.</p>
+                <p style={{ marginTop: 4, color: "#6b7280", fontSize: 11 }}>Use the toolbar for formatting. Use <code>/n</code> to create a new line on the public page.</p>
               </div>
               {(["office", "email"] as const).map((key) => (
                 <Field key={key} label={key} value={content.contact[key]}

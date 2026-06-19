@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { richTextHtml } from "@/lib/richText";
 
 type NewsItem = { date: string; type: string; text: string };
 type PubLink = { label: string; href: string };
@@ -72,15 +73,6 @@ function normalizeTabs(tabOrder?: TabItem[]) {
     })),
     ...defaultTabs.filter((tab) => !seen.has(tab.key)),
   ];
-}
-
-function renderLineBreaks(text: string) {
-  return text.split("/n").map((part, index, parts) => (
-    <span key={`${part}-${index}`}>
-      {part}
-      {index < parts.length - 1 && <br />}
-    </span>
-  ));
 }
 
 function memberSection(member: GroupMember) {
@@ -165,9 +157,11 @@ export function TabContent({ news, aboutIntro, publicationSections, groupMembers
           {aboutIntro && (
             <section style={{ marginBottom: "2.5rem" }}>
               <h2 className="section-title">About Me</h2>
-              <p style={{ color: "var(--muted)", fontSize: "0.95rem", lineHeight: 1.8, margin: 0 }}>
-                {renderLineBreaks(aboutIntro)}
-              </p>
+              <div
+                className="rich-text-content"
+                style={{ color: "var(--muted)", fontSize: "0.95rem", lineHeight: 1.8, margin: 0 }}
+                dangerouslySetInnerHTML={richTextHtml(aboutIntro)}
+              />
             </section>
           )}
           {news.length > 0 && (
@@ -176,25 +170,33 @@ export function TabContent({ news, aboutIntro, publicationSections, groupMembers
               {news.map((item, i) => (
                 <div key={i} className="news-item">
                   <span style={{ color: "var(--muted)", fontWeight: 500, fontSize: "0.85rem" }}>{item.date}</span>
-                  <span>
+                  <div className="news-text">
                     <span className={`badge ${badgeClass[item.type] || "badge-misc"}`}>
                       {badgeLabel[item.type] || "News"}
                     </span>
-                    {renderLineBreaks(item.text)}
-                  </span>
+                    <span
+                      className="rich-text-content rich-text-inline"
+                      dangerouslySetInnerHTML={richTextHtml(item.text)}
+                    />
+                  </div>
                 </div>
               ))}
             </section>
           )}
           <section id="contact" style={{ marginBottom: "2.5rem", scrollMarginTop: "4.5rem" }}>
             <h2 className="section-title">Contact</h2>
-            <p style={{ color: "var(--muted)", fontSize: "0.9rem", lineHeight: 1.8 }}>
-              {contact.address && <>{renderLineBreaks(contact.address)}<br /></>}
+            <div style={{ color: "var(--muted)", fontSize: "0.9rem", lineHeight: 1.8 }}>
+              {contact.address && (
+                <div
+                  className="rich-text-content"
+                  dangerouslySetInnerHTML={richTextHtml(contact.address)}
+                />
+              )}
               {contact.office && <>Office: {contact.office}<br /></>}
               {contact.email && (
                 <>Email: <a href={`mailto:${contact.email}`} style={{ color: "var(--accent-light)" }}>{contact.email}</a></>
               )}
-            </p>
+            </div>
           </section>
         </div>
       )}

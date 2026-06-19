@@ -2,6 +2,7 @@ import { connectDB } from "@/lib/mongodb";
 import { Content } from "@/lib/models/Content";
 import { TabContent } from "@/app/components/TabContent";
 import { getDefaultPublicationSections, needsPublicationSeed } from "@/lib/publicationData";
+import { formatRichTextHtml } from "@/lib/richText";
 
 async function getContent() {
   await connectDB();
@@ -24,31 +25,12 @@ async function getContent() {
 
 const BOLD_BIO_PHRASE = "Laboratory of Agro-Environmental Engineering";
 
-function renderBioText(text: string) {
-  const pieces = text.split(BOLD_BIO_PHRASE);
-  if (pieces.length === 1) return text;
+function bioHtml(text: string) {
+  const html = formatRichTextHtml(text)
+    .split(BOLD_BIO_PHRASE)
+    .join(`<strong>${BOLD_BIO_PHRASE}</strong>`);
 
-  return pieces.map((piece, index) => (
-    <span key={`${piece}-${index}`}>
-      {piece}
-      {index < pieces.length - 1 && <strong>{BOLD_BIO_PHRASE}</strong>}
-    </span>
-  ));
-}
-
-function renderLineBreaks(text: string) {
-  return text.split("/n").map((part, index, parts) => (
-    <span
-      key={`${part}-${index}`}
-      style={{
-        display: "block",
-        textAlign: part.trim() === BOLD_BIO_PHRASE ? "left" : "justify",
-      }}
-    >
-      {renderBioText(part)}
-      {index < parts.length - 1 && <span style={{ display: "block", height: "0.25rem" }} />}
-    </span>
-  ));
+  return { __html: html };
 }
 
 interface PageData {
@@ -205,9 +187,12 @@ export default async function Home() {
         {profile.bio?.length > 0 && (
           <section style={{ marginBottom: "2.5rem" }}>
             {profile.bio.map((para, i) => (
-              <p key={i} style={{ fontSize: "0.9rem", lineHeight: 1.7, marginBottom: "0.75rem", color: "#374151" }}>
-                {renderLineBreaks(para)}
-              </p>
+              <div
+                key={i}
+                className="rich-text-content"
+                style={{ fontSize: "0.9rem", lineHeight: 1.7, marginBottom: "0.75rem", color: "#374151", textAlign: "justify" }}
+                dangerouslySetInnerHTML={bioHtml(para)}
+              />
             ))}
           </section>
         )}

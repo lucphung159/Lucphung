@@ -11,7 +11,7 @@ interface Props {
 
 export function RichTextEditor({ value, onChange, placeholder, minRows = 2, toolbar = "basic" }: Props) {
   const ref = useRef<HTMLDivElement>(null);
-  const lastValueRef = useRef(value);
+  const lastValueRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (ref.current && value !== lastValueRef.current) {
@@ -35,13 +35,13 @@ export function RichTextEditor({ value, onChange, placeholder, minRows = 2, tool
   function insertLink() {
     const sel = window.getSelection();
     const selectedText = sel?.toString().trim();
-    const url = prompt("URL оруулна уу:", "https://");
+    const url = prompt("Enter URL:", "https://");
     if (!url) return;
     ref.current?.focus();
     if (selectedText) {
       document.execCommand("createLink", false, url);
     } else {
-      const text = prompt("Холбоосны текст:", url) || url;
+      const text = prompt("Link text:", url) || url;
       document.execCommand(
         "insertHTML",
         false,
@@ -67,6 +67,8 @@ export function RichTextEditor({ value, onChange, placeholder, minRows = 2, tool
           style={{ ...btnStyle, fontWeight: "bold" }}>B</button>
         <button type="button" title="Italic" onMouseDown={(e) => { e.preventDefault(); execCmd("italic"); }}
           style={{ ...btnStyle, fontStyle: "italic" }}>I</button>
+        <button type="button" title="Underline" onMouseDown={(e) => { e.preventDefault(); execCmd("underline"); }}
+          style={{ ...btnStyle, textDecoration: "underline" }}>U</button>
 
         {toolbar === "full" && (
           <>
