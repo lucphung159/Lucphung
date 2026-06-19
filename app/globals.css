@@ -56,10 +56,14 @@ a:hover {
 
 .news-item {
   display: grid;
-  grid-template-columns: 100px 1fr;
-  gap: 0.5rem;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 1rem;
   margin-bottom: 0.75rem;
   font-size: 0.9rem;
+}
+
+.news-item > span:first-child {
+  white-space: nowrap;
 }
 
 .badge {
