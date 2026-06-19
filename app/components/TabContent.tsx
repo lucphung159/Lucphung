@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type NewsItem = { date: string; type: string; text: string };
 type PubLink = { label: string; href: string };
@@ -111,6 +111,22 @@ export function TabContent({ news, aboutIntro, publicationSections, groupMembers
   const tabs = normalizeTabs(tabOrder);
   const [tab, setTab] = useState<TabKey>(tabs[0]?.key || "publications");
 
+  useEffect(() => {
+    function openContactFromHash() {
+      if (window.location.hash !== "#contact") return;
+
+      setTab("aboutMe");
+      window.setTimeout(() => {
+        document.getElementById("contact")?.scrollIntoView({ block: "start" });
+      }, 0);
+    }
+
+    openContactFromHash();
+    window.addEventListener("hashchange", openContactFromHash);
+
+    return () => window.removeEventListener("hashchange", openContactFromHash);
+  }, []);
+
   return (
     <div>
       {/* Tab bar */}
@@ -170,7 +186,7 @@ export function TabContent({ news, aboutIntro, publicationSections, groupMembers
               ))}
             </section>
           )}
-          <section style={{ marginBottom: "2.5rem" }}>
+          <section id="contact" style={{ marginBottom: "2.5rem", scrollMarginTop: "4.5rem" }}>
             <h2 className="section-title">Contact</h2>
             <p style={{ color: "var(--muted)", fontSize: "0.9rem", lineHeight: 1.8 }}>
               {contact.address && <>{renderLineBreaks(contact.address)}<br /></>}

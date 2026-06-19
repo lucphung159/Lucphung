@@ -100,6 +100,7 @@ export default async function Home() {
           </span>
           <nav className="flex gap-5 text-sm" style={{ color: "var(--muted)" }}>
             <a href="#top" className="hover:text-gray-900 transition-colors">Home</a>
+            <a href="#contact" className="hover:text-gray-900 transition-colors">Contact</a>
           </nav>
         </div>
       </header>
