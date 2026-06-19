@@ -104,10 +104,11 @@ export default async function Home() {
             {profile.title && (
               <p style={{ color: "#374151", fontSize: "0.95rem", marginBottom: "0.2rem" }}>{profile.title}</p>
             )}
-            {(profile.department || profile.university) && (
+            {profile.department && (
+              <p style={{ color: "var(--muted)", fontSize: "0.9rem", marginBottom: "0.1rem" }}>{profile.department}</p>
+            )}
+            {profile.university && (
               <p style={{ color: "var(--muted)", fontSize: "0.9rem", marginBottom: "0.75rem" }}>
-                {profile.department && <>{profile.department}</>}
-                {profile.department && profile.university && <> · </>}
                 {profile.university}
                 {profile.advisor && <> &nbsp;|&nbsp; Advisor: {profile.advisor}</>}
               </p>
