@@ -496,6 +496,7 @@ export default function AdminDashboard() {
                         <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#374151", marginBottom: 4 }}>Text</label>
                         <textarea value={item.text} onChange={(e) => setNews(i, "text", e.target.value)} rows={2}
                           style={{ ...inputStyle, width: "100%", padding: "7px 12px", borderRadius: 8, fontSize: 13, outline: "none", resize: "none" }} />
+                        <p style={{ marginTop: 4, color: "#6b7280", fontSize: 11 }}>Use <code>/n</code> to create a new line on the public page.</p>
                       </div>
                     </div>
                     <button onClick={() => removeNews(i)} style={{ marginTop: 20, fontSize: 12, padding: "4px 8px", borderRadius: 6, background: "#fee2e2", color: "#b91c1c", border: "none", cursor: "pointer" }}>✕</button>

@@ -180,7 +180,7 @@ export function TabContent({ news, aboutIntro, publicationSections, groupMembers
                     <span className={`badge ${badgeClass[item.type] || "badge-misc"}`}>
                       {badgeLabel[item.type] || "News"}
                     </span>
-                    {item.text}
+                    {renderLineBreaks(item.text)}
                   </span>
                 </div>
               ))}
