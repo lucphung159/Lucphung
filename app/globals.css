@@ -81,7 +81,7 @@ a:hover {
 .badge-paper { background: #dbeafe; color: #1e40af; }
 .badge-award { background: #fef3c7; color: #92400e; }
 .badge-talk  { background: #d1fae5; color: #065f46; }
-.badge-misc  { background: #f3f4f6; color: #374151; }
+.badge-misc  { background: #fef2f2; color: #c0392b; }
 
 .openings-content {
   font-size: 0.92rem;

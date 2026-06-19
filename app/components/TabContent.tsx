@@ -164,7 +164,7 @@ export function TabContent({ news, aboutIntro, publicationSections, groupMembers
         <div>
           {aboutIntro && (
             <section style={{ marginBottom: "2.5rem" }}>
-              <h2 className="section-title">Introduction</h2>
+              <h2 className="section-title">About Me</h2>
               <p style={{ color: "var(--muted)", fontSize: "0.95rem", lineHeight: 1.8, margin: 0 }}>
                 {renderLineBreaks(aboutIntro)}
               </p>
