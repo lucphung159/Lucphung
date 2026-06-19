@@ -11,10 +11,17 @@ type PubSectionItem = {
   authors: string; venue: string; links: PubLink[];
 };
 type PubSection = { title: string; publicationsList: PubSectionItem[] };
+type GroupSectionKey = "keyCoInvestigators" | "currentStudents" | "alumni";
 type GroupMember = {
   name: string; nameHref: string; role: string; research: string;
-  badge: string; coAdvise: string; image: string;
+  badge: string; coAdvise: string; groupSection: GroupSectionKey; image: string;
 };
+
+const groupSections: { key: GroupSectionKey; title: string }[] = [
+  { key: "keyCoInvestigators", title: "Key Co-investigators" },
+  { key: "currentStudents", title: "Current Students" },
+  { key: "alumni", title: "Alumni" },
+];
 type PublicTabKey = "publications" | "labMembers" | "blog" | "aboutMe" | "openings";
 type PublicTabItem = { key: PublicTabKey; label: string };
 
@@ -76,6 +83,25 @@ function Field({ label, value, onChange, placeholder, type = "text" }: {
   );
 }
 
+function normalizeGroupSection(groupSection?: string): GroupSectionKey {
+  return groupSections.some((section) => section.key === groupSection)
+    ? groupSection as GroupSectionKey
+    : "currentStudents";
+}
+
+function normalizeGroupMembers(groupMembers?: Partial<GroupMember>[]) {
+  return (groupMembers || []).map((member) => ({
+    name: member.name || "",
+    nameHref: member.nameHref || "",
+    role: member.role || "",
+    research: member.research || "",
+    badge: member.badge || "",
+    coAdvise: member.coAdvise || "",
+    groupSection: normalizeGroupSection(member.groupSection),
+    image: member.image || "",
+  }));
+}
+
 function normalizePublicTabs(tabOrder?: PublicTabItem[]) {
   const seen = new Set<PublicTabKey>();
   const validKeys = new Set(defaultPublicTabs.map((tab) => tab.key));
@@ -128,7 +154,7 @@ export default function AdminDashboard() {
       news: data.news || [],
       aboutIntro: data.aboutIntro || "",
       publicationSections: data.publicationSections || [],
-      groupMembers: data.groupMembers || [],
+      groupMembers: normalizeGroupMembers(data.groupMembers),
       tabOrder: normalizePublicTabs(data.tabOrder),
       openings: data.openings || "",
       blog: data.blog || "",
@@ -242,7 +268,7 @@ export default function AdminDashboard() {
     setContent((c) => { const gm = [...c.groupMembers]; gm[i] = { ...gm[i], [key]: val }; return { ...c, groupMembers: gm }; });
   }
   function addMember() {
-    setContent((c) => ({ ...c, groupMembers: [...c.groupMembers, { name: "", nameHref: "", role: "", research: "", badge: "", coAdvise: "", image: "" }] }));
+    setContent((c) => ({ ...c, groupMembers: [...c.groupMembers, { name: "", nameHref: "", role: "", research: "", badge: "", coAdvise: "", groupSection: "currentStudents", image: "" }] }));
   }
   function removeMember(i: number) { setContent((c) => ({ ...c, groupMembers: c.groupMembers.filter((_, j) => j !== i) })); }
 
@@ -827,6 +853,18 @@ function MemberCard({ member, index, onUpdate, onRemove }: {
 
         {/* Fields */}
         <div style={{ flex: 1, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+          <div>
+            <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "#374151", marginBottom: 3 }}>Section</label>
+            <select
+              value={member.groupSection}
+              onChange={(e) => onUpdate("groupSection", e.target.value)}
+              style={{ ...inputStyle, width: "100%", padding: "6px 10px", borderRadius: 8, fontSize: 12, outline: "none" }}
+            >
+              {groupSections.map((section) => (
+                <option key={section.key} value={section.key}>{section.title}</option>
+              ))}
+            </select>
+          </div>
           {([
             { key: "name", label: "Name" },
             { key: "nameHref", label: "Name URL (optional)" },

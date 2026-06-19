@@ -46,6 +46,11 @@ const GroupMemberSchema = new Schema({
   research: { type: String, default: "" },
   badge: { type: String, default: "" },
   coAdvise: { type: String, default: "" },
+  groupSection: {
+    type: String,
+    enum: ["keyCoInvestigators", "currentStudents", "alumni"],
+    default: "currentStudents",
+  },
   image: { type: String, default: "" }, // base64
 });
 

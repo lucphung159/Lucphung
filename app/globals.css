@@ -115,6 +115,14 @@ a:hover {
   color: #1f2937;
 }
 
+.member-section {
+  margin-bottom: 2.25rem;
+}
+
+.member-section:last-child {
+  margin-bottom: 0;
+}
+
 .member-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));

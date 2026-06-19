@@ -12,6 +12,7 @@ type PubSectionItem = {
   links: PubLink[];
 };
 type PubSection = { title: string; publicationsList: PubSectionItem[] };
+type GroupSectionKey = "keyCoInvestigators" | "currentStudents" | "alumni";
 type GroupMember = {
   name: string;
   nameHref?: string;
@@ -19,8 +20,15 @@ type GroupMember = {
   research: string;
   badge?: string;
   coAdvise?: string;
+  groupSection?: GroupSectionKey;
   image?: string;
 };
+
+const groupSections: { key: GroupSectionKey; title: string }[] = [
+  { key: "keyCoInvestigators", title: "Key Co-investigators" },
+  { key: "currentStudents", title: "Current Students" },
+  { key: "alumni", title: "Alumni" },
+];
 
 interface Props {
   news: NewsItem[];
@@ -75,6 +83,12 @@ function renderLineBreaks(text: string) {
       {index < parts.length - 1 && <br />}
     </span>
   ));
+}
+
+function memberSection(member: GroupMember) {
+  return groupSections.some((section) => section.key === member.groupSection)
+    ? member.groupSection
+    : "currentStudents";
 }
 
 export function TabContent({ news, aboutIntro, publicationSections, groupMembers, openings, blog, contact, tabOrder }: Props) {
@@ -219,46 +233,56 @@ export function TabContent({ news, aboutIntro, publicationSections, groupMembers
       {/* -------- Lab Members -------- */}
       {tab === "labMembers" && (
         <div style={{ marginBottom: "2.5rem" }}>
-          {groupMembers.length === 0 && (
-            <p style={{ color: "var(--muted)", fontSize: "0.9rem" }}>No group members yet.</p>
-          )}
-          <div className="member-list">
-            {groupMembers.map((member, i) => (
-              <div key={i} className="member-card">
-                <div className="member-photo-wrap">
-                  <div className="member-photo">
-                    {member.image ? (
-                      <img src={member.image} alt={member.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    ) : (
-                      <svg width="50" height="50" viewBox="0 0 80 80" fill="none">
-                        <circle cx="40" cy="30" r="20" fill="#c7d7ea" />
-                        <ellipse cx="40" cy="75" rx="30" ry="20" fill="#c7d7ea" />
-                      </svg>
-                    )}
+          {groupSections.map((section) => {
+            const members = groupMembers.filter((member) => memberSection(member) === section.key);
+
+            return (
+              <section key={section.key} className="member-section">
+                <h2 className="section-title">{section.title}</h2>
+                {members.length === 0 ? (
+                  <p style={{ color: "var(--muted)", fontSize: "0.9rem" }}>No members yet.</p>
+                ) : (
+                  <div className="member-list">
+                    {members.map((member, i) => (
+                      <div key={`${section.key}-${i}`} className="member-card">
+                        <div className="member-photo-wrap">
+                          <div className="member-photo">
+                            {member.image ? (
+                              <img src={member.image} alt={member.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                            ) : (
+                              <svg width="50" height="50" viewBox="0 0 80 80" fill="none">
+                                <circle cx="40" cy="30" r="20" fill="#c7d7ea" />
+                                <ellipse cx="40" cy="75" rx="30" ry="20" fill="#c7d7ea" />
+                              </svg>
+                            )}
+                          </div>
+                          {member.badge && (
+                            <div className="member-badge">
+                              {member.badge}
+                            </div>
+                          )}
+                        </div>
+                        <div className="member-info">
+                          <div>
+                            {member.nameHref ? (
+                              <a href={member.nameHref} target="_blank" rel="noopener noreferrer" className="member-name">
+                                {member.name}
+                              </a>
+                            ) : (
+                              <span className="member-name">{member.name}</span>
+                            )}
+                          </div>
+                          {member.role && <div className="member-role">{member.role}</div>}
+                          {member.coAdvise && <div className="member-advisor">{member.coAdvise}</div>}
+                          {member.research && <div className="member-research">{member.research}</div>}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  {member.badge && (
-                    <div className="member-badge">
-                      {member.badge}
-                    </div>
-                  )}
-                </div>
-                <div className="member-info">
-                  <div>
-                    {member.nameHref ? (
-                      <a href={member.nameHref} target="_blank" rel="noopener noreferrer" className="member-name">
-                        {member.name}
-                      </a>
-                    ) : (
-                      <span className="member-name">{member.name}</span>
-                    )}
-                  </div>
-                  {member.role && <div className="member-role">{member.role}</div>}
-                  {member.coAdvise && <div className="member-advisor">{member.coAdvise}</div>}
-                  {member.research && <div className="member-research">{member.research}</div>}
-                </div>
-              </div>
-            ))}
-          </div>
+                )}
+              </section>
+            );
+          })}
         </div>
       )}
 

@@ -40,7 +40,9 @@ interface PageData {
   }[];
   groupMembers: {
     name: string; nameHref?: string; role: string; research: string;
-    badge?: string; coAdvise?: string; image?: string;
+    badge?: string; coAdvise?: string;
+    groupSection?: "keyCoInvestigators" | "currentStudents" | "alumni";
+    image?: string;
   }[];
   tabOrder?: {
     key: "publications" | "labMembers" | "blog" | "aboutMe" | "openings";
