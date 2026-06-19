@@ -68,7 +68,7 @@ function normalizeTabs(tabOrder?: TabItem[]) {
 }
 
 function renderLineBreaks(text: string) {
-  return text.split("--line").map((part, index, parts) => (
+  return text.split("/n").map((part, index, parts) => (
     <span key={`${part}-${index}`}>
       {part}
       {index < parts.length - 1 && <br />}
