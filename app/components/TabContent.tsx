@@ -91,6 +91,24 @@ function memberSection(member: GroupMember) {
     : "currentStudents";
 }
 
+function splitMemberRole(role: string) {
+  const match = role.trim().match(/^(.*?)\s*(\([^()]+\))\s*$/);
+  return match && match[1]
+    ? { role: match[1], intake: match[2] }
+    : { role, intake: "" };
+}
+
+function MemberRole({ role }: { role: string }) {
+  const parts = splitMemberRole(role);
+
+  return (
+    <div className="member-role">
+      <div>{parts.role}</div>
+      {parts.intake && <div className="member-intake">{parts.intake}</div>}
+    </div>
+  );
+}
+
 export function TabContent({ news, aboutIntro, publicationSections, groupMembers, openings, blog, contact, tabOrder }: Props) {
   const tabs = normalizeTabs(tabOrder);
   const [tab, setTab] = useState<TabKey>(tabs[0]?.key || "publications");
@@ -272,7 +290,7 @@ export function TabContent({ news, aboutIntro, publicationSections, groupMembers
                               <span className="member-name">{member.name}</span>
                             )}
                           </div>
-                          {member.role && <div className="member-role">{member.role}</div>}
+                          {member.role && <MemberRole role={member.role} />}
                           {member.coAdvise && <div className="member-advisor">{member.coAdvise}</div>}
                           {member.research && <div className="member-research">{member.research}</div>}
                         </div>
