@@ -20,6 +20,7 @@ interface PageData {
     profileImage: string; bio: string[];
   };
   news: { date: string; type: string; text: string }[];
+  aboutIntro: string;
   publicationSections: {
     title: string;
     publicationsList: {
@@ -45,7 +46,7 @@ export const revalidate = 0;
 
 export default async function Home() {
   const data = await getContent();
-  const { profile, news, publicationSections, groupMembers, tabOrder, openings, blog, contact } = data;
+  const { profile, news, aboutIntro, publicationSections, groupMembers, tabOrder, openings, blog, contact } = data;
 
   const links = [
     profile.facultyPage && { label: "Faculty Page", href: profile.facultyPage },
@@ -167,6 +168,7 @@ export default async function Home() {
         {/* Tabbed content */}
         <TabContent
           news={news || []}
+          aboutIntro={aboutIntro || ""}
           publicationSections={publicationSections || []}
           groupMembers={groupMembers || []}
           openings={openings || ""}

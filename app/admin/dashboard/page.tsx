@@ -34,6 +34,7 @@ interface PageContent {
     profileImage: string; bio: string[];
   };
   news: NewsItem[];
+  aboutIntro: string;
   publicationSections: PubSection[];
   groupMembers: GroupMember[];
   tabOrder: PublicTabItem[];
@@ -45,6 +46,7 @@ interface PageContent {
 const defaultContent: PageContent = {
   profile: { name: "", title: "", university: "", advisor: "", email: "", scholar: "", twitter: "", facultyPage: "", linkedin: "", youtube: "", instagram: "", researchGate: "", profileImage: "", bio: [""] },
   news: [],
+  aboutIntro: "",
   publicationSections: [],
   groupMembers: [],
   tabOrder: defaultPublicTabs,
@@ -53,7 +55,7 @@ const defaultContent: PageContent = {
   contact: { address: "", office: "", email: "" },
 };
 
-type Tab = "profile" | "news" | "publications" | "group" | "mainTabs" | "openings" | "blog" | "contact";
+type Tab = "profile" | "news" | "aboutMe" | "publications" | "group" | "mainTabs" | "openings" | "blog" | "contact";
 
 const inputStyle = { border: "1px solid #d1d5db", background: "#f9fafb" };
 
@@ -122,6 +124,7 @@ export default function AdminDashboard() {
         bio: data.profile?.bio || [""],
       },
       news: data.news || [],
+      aboutIntro: data.aboutIntro || "",
       publicationSections: data.publicationSections || [],
       groupMembers: data.groupMembers || [],
       tabOrder: normalizePublicTabs(data.tabOrder),
@@ -281,6 +284,7 @@ export default function AdminDashboard() {
   const tabs: { key: Tab; label: string }[] = [
     { key: "profile", label: "Profile" },
     { key: "news", label: "News" },
+    { key: "aboutMe", label: publicTabLabel("aboutMe") },
     { key: "publications", label: publicTabLabel("publications") },
     { key: "group", label: publicTabLabel("labMembers") },
     { key: "mainTabs", label: "Main Tabs" },
@@ -391,6 +395,26 @@ export default function AdminDashboard() {
                 ))}
               </div>
             </div>
+          </div>
+        )}
+
+        {/* =================== ABOUT ME =================== */}
+        {tab === "aboutMe" && (
+          <div style={card}>
+            <div style={{ marginBottom: 12 }}>
+              <h2 style={{ ...sectionHeader, marginBottom: 4 }}>{publicTabLabel("aboutMe")} Introduction</h2>
+              <p style={{ fontSize: 12, color: "#6b7280", margin: 0 }}>
+                Short introduction shown before News and Contact on the public {publicTabLabel("aboutMe")} tab.
+              </p>
+            </div>
+            <textarea
+              value={content.aboutIntro}
+              onChange={(e) => setContent((c) => ({ ...c, aboutIntro: e.target.value }))}
+              rows={5}
+              placeholder="Write a short introduction..."
+              style={{ ...inputStyle, width: "100%", padding: "9px 12px", borderRadius: 8, fontSize: 13, outline: "none", resize: "vertical", lineHeight: 1.6 }}
+            />
+            <p style={{ marginTop: 6, color: "#6b7280", fontSize: 11 }}>Use <code>/n</code> to create a new line on the public page.</p>
           </div>
         )}
 

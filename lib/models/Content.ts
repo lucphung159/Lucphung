@@ -89,6 +89,10 @@ const ContentSchema = new Schema(
       type: [NewsItemSchema],
       default: [],
     },
+    aboutIntro: {
+      type: String,
+      default: "",
+    },
     publications: {
       type: [PublicationSchema],
       default: [],

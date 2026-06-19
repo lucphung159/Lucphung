@@ -24,6 +24,7 @@ type GroupMember = {
 
 interface Props {
   news: NewsItem[];
+  aboutIntro: string;
   publicationSections: PubSection[];
   groupMembers: GroupMember[];
   openings: string;
@@ -76,7 +77,7 @@ function renderLineBreaks(text: string) {
   ));
 }
 
-export function TabContent({ news, publicationSections, groupMembers, openings, blog, contact, tabOrder }: Props) {
+export function TabContent({ news, aboutIntro, publicationSections, groupMembers, openings, blog, contact, tabOrder }: Props) {
   const tabs = normalizeTabs(tabOrder);
   const [tab, setTab] = useState<TabKey>(tabs[0]?.key || "publications");
 
@@ -115,6 +116,14 @@ export function TabContent({ news, publicationSections, groupMembers, openings, 
       {/* -------- About Me -------- */}
       {tab === "aboutMe" && (
         <div>
+          {aboutIntro && (
+            <section style={{ marginBottom: "2.5rem" }}>
+              <h2 className="section-title">Introduction</h2>
+              <p style={{ color: "var(--muted)", fontSize: "0.95rem", lineHeight: 1.8, margin: 0 }}>
+                {renderLineBreaks(aboutIntro)}
+              </p>
+            </section>
+          )}
           {news.length > 0 && (
             <section style={{ marginBottom: "2.5rem" }}>
               <h2 className="section-title">News</h2>
