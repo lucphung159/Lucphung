@@ -14,7 +14,7 @@ async function getContent() {
 
 interface PageData {
   profile: {
-    name: string; title: string; department: string; university: string; advisor: string;
+    name: string; headerName?: string; title: string; department: string; university: string; advisor: string;
     email: string; scholar: string; twitter: string; facultyPage: string;
     linkedin: string; youtube: string; instagram: string; researchGate: string;
     profileImage: string; bio: string[];
@@ -47,6 +47,7 @@ export const revalidate = 0;
 export default async function Home() {
   const data = await getContent();
   const { profile, news, aboutIntro, publicationSections, groupMembers, tabOrder, openings, blog, contact } = data;
+  const headerName = profile.headerName || profile.name;
 
   const links = [
     profile.facultyPage && { label: "Faculty Page", href: profile.facultyPage },
@@ -64,7 +65,7 @@ export default async function Home() {
       <header style={{ borderBottom: "1px solid var(--border)", background: "#fff" }} className="sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-6 py-3 flex items-center justify-between">
           <span style={{ color: "var(--accent)", fontWeight: 700, fontSize: "1rem" }}>
-            {profile.name}
+            {headerName}
           </span>
           <nav className="flex gap-5 text-sm" style={{ color: "var(--muted)" }}>
             <a href="#top" className="hover:text-gray-900 transition-colors">Home</a>

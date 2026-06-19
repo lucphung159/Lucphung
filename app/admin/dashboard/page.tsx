@@ -28,7 +28,7 @@ const defaultPublicTabs: PublicTabItem[] = [
 
 interface PageContent {
   profile: {
-    name: string; title: string; department: string; university: string; advisor: string;
+    name: string; headerName: string; title: string; department: string; university: string; advisor: string;
     email: string; scholar: string; twitter: string; facultyPage: string;
     linkedin: string; youtube: string; instagram: string; researchGate: string;
     profileImage: string; bio: string[];
@@ -44,7 +44,7 @@ interface PageContent {
 }
 
 const defaultContent: PageContent = {
-  profile: { name: "", title: "", department: "", university: "", advisor: "", email: "", scholar: "", twitter: "", facultyPage: "", linkedin: "", youtube: "", instagram: "", researchGate: "", profileImage: "", bio: [""] },
+  profile: { name: "", headerName: "", title: "", department: "", university: "", advisor: "", email: "", scholar: "", twitter: "", facultyPage: "", linkedin: "", youtube: "", instagram: "", researchGate: "", profileImage: "", bio: [""] },
   news: [],
   aboutIntro: "",
   publicationSections: [],
@@ -109,6 +109,7 @@ export default function AdminDashboard() {
     setContent({
       profile: {
         name: data.profile?.name || "",
+        headerName: data.profile?.headerName || "",
         title: data.profile?.title || "",
         department: data.profile?.department || "",
         university: data.profile?.university || "",
@@ -358,10 +359,11 @@ export default function AdminDashboard() {
             />
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginTop: 20 }}>
-              {(["name", "title", "department", "university", "advisor", "email", "facultyPage", "scholar", "twitter", "linkedin", "youtube", "instagram", "researchGate"] as const).map((key) => (
+              {(["name", "headerName", "title", "department", "university", "advisor", "email", "facultyPage", "scholar", "twitter", "linkedin", "youtube", "instagram", "researchGate"] as const).map((key) => (
                 <Field
                   key={key}
                   label={
+                    key === "headerName" ? "Top Left Header Name" :
                     key === "scholar" ? "Google Scholar URL" :
                     key === "facultyPage" ? "Faculty Page URL" :
                     key === "twitter" ? "X (Twitter) URL" :

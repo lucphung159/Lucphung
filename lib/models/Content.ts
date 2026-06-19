@@ -66,6 +66,7 @@ const ContentSchema = new Schema(
     type: { type: String, default: "page_content", unique: true },
     profile: {
       name: { type: String, default: "Luc Phung" },
+      headerName: { type: String, default: "" },
       title: { type: String, default: "PhD Student · Department of Computer Science" },
       department: { type: String, default: "" },
       university: { type: String, default: "University of Technology" },
