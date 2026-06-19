@@ -67,6 +67,7 @@ const ContentSchema = new Schema(
     profile: {
       name: { type: String, default: "Luc Phung" },
       title: { type: String, default: "PhD Student · Department of Computer Science" },
+      department: { type: String, default: "" },
       university: { type: String, default: "University of Technology" },
       advisor: { type: String, default: "Prof. Jane Doe" },
       email: { type: String, default: "lucphung@example.com" },

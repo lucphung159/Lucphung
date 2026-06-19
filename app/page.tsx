@@ -14,7 +14,7 @@ async function getContent() {
 
 interface PageData {
   profile: {
-    name: string; title: string; university: string; advisor: string;
+    name: string; title: string; department: string; university: string; advisor: string;
     email: string; scholar: string; twitter: string; facultyPage: string;
     linkedin: string; youtube: string; instagram: string; researchGate: string;
     profileImage: string; bio: string[];
@@ -104,8 +104,10 @@ export default async function Home() {
             {profile.title && (
               <p style={{ color: "#374151", fontSize: "0.95rem", marginBottom: "0.2rem" }}>{profile.title}</p>
             )}
-            {profile.university && (
+            {(profile.department || profile.university) && (
               <p style={{ color: "var(--muted)", fontSize: "0.9rem", marginBottom: "0.75rem" }}>
+                {profile.department && <>{profile.department}</>}
+                {profile.department && profile.university && <> · </>}
                 {profile.university}
                 {profile.advisor && <> &nbsp;|&nbsp; Advisor: {profile.advisor}</>}
               </p>

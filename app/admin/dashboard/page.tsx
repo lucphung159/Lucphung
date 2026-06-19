@@ -28,7 +28,7 @@ const defaultPublicTabs: PublicTabItem[] = [
 
 interface PageContent {
   profile: {
-    name: string; title: string; university: string; advisor: string;
+    name: string; title: string; department: string; university: string; advisor: string;
     email: string; scholar: string; twitter: string; facultyPage: string;
     linkedin: string; youtube: string; instagram: string; researchGate: string;
     profileImage: string; bio: string[];
@@ -44,7 +44,7 @@ interface PageContent {
 }
 
 const defaultContent: PageContent = {
-  profile: { name: "", title: "", university: "", advisor: "", email: "", scholar: "", twitter: "", facultyPage: "", linkedin: "", youtube: "", instagram: "", researchGate: "", profileImage: "", bio: [""] },
+  profile: { name: "", title: "", department: "", university: "", advisor: "", email: "", scholar: "", twitter: "", facultyPage: "", linkedin: "", youtube: "", instagram: "", researchGate: "", profileImage: "", bio: [""] },
   news: [],
   aboutIntro: "",
   publicationSections: [],
@@ -110,6 +110,7 @@ export default function AdminDashboard() {
       profile: {
         name: data.profile?.name || "",
         title: data.profile?.title || "",
+        department: data.profile?.department || "",
         university: data.profile?.university || "",
         advisor: data.profile?.advisor || "",
         email: data.profile?.email || "",
@@ -357,7 +358,7 @@ export default function AdminDashboard() {
             />
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginTop: 20 }}>
-              {(["name", "title", "university", "advisor", "email", "facultyPage", "scholar", "twitter", "linkedin", "youtube", "instagram", "researchGate"] as const).map((key) => (
+              {(["name", "title", "department", "university", "advisor", "email", "facultyPage", "scholar", "twitter", "linkedin", "youtube", "instagram", "researchGate"] as const).map((key) => (
                 <Field
                   key={key}
                   label={
