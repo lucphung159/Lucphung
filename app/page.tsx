@@ -28,9 +28,15 @@ function renderBioText(text: string) {
 
 function renderLineBreaks(text: string) {
   return text.split("/n").map((part, index, parts) => (
-    <span key={`${part}-${index}`}>
+    <span
+      key={`${part}-${index}`}
+      style={{
+        display: "block",
+        textAlign: part.trim() === BOLD_BIO_PHRASE ? "left" : "justify",
+      }}
+    >
       {renderBioText(part)}
-      {index < parts.length - 1 && <br />}
+      {index < parts.length - 1 && <span style={{ display: "block", height: "0.25rem" }} />}
     </span>
   ));
 }
