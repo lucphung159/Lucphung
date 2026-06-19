@@ -210,6 +210,11 @@ a:hover {
   margin-top: 0.35rem;
   font-size: 0.82rem;
   font-style: italic;
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 @media (max-width: 520px) {
