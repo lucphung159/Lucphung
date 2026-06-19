@@ -264,6 +264,12 @@ export default function AdminDashboard() {
     setContent((c) => ({ ...c, tabOrder: defaultPublicTabs }));
   }
 
+  function publicTabLabel(key: PublicTabKey) {
+    return content.tabOrder.find((item) => item.key === key)?.label
+      || defaultPublicTabs.find((item) => item.key === key)?.label
+      || key;
+  }
+
   if (loading) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f0f4f8" }}>
@@ -275,11 +281,11 @@ export default function AdminDashboard() {
   const tabs: { key: Tab; label: string }[] = [
     { key: "profile", label: "Profile" },
     { key: "news", label: "News" },
-    { key: "publications", label: "Publications" },
-    { key: "group", label: "Lab Members" },
+    { key: "publications", label: publicTabLabel("publications") },
+    { key: "group", label: publicTabLabel("labMembers") },
     { key: "mainTabs", label: "Main Tabs" },
-    { key: "openings", label: "Openings" },
-    { key: "blog", label: "Blog" },
+    { key: "openings", label: publicTabLabel("openings") },
+    { key: "blog", label: publicTabLabel("blog") },
     { key: "contact", label: "Contact" },
   ];
 
@@ -649,9 +655,9 @@ export default function AdminDashboard() {
           <div style={card}>
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 12 }}>
               <div>
-                <h2 style={{ ...sectionHeader, marginBottom: 4 }}>Openings</h2>
+                <h2 style={{ ...sectionHeader, marginBottom: 4 }}>{publicTabLabel("openings")}</h2>
                 <p style={{ fontSize: 12, color: "#6b7280", marginBottom: 0 }}>
-                  Rich content shown on the Openings tab. Supports headings (H2, H3), bold, bullet lists, and hyperlinks.
+                  Rich content shown on the {publicTabLabel("openings")} tab. Supports headings (H2, H3), bold, bullet lists, and hyperlinks.
                 </p>
               </div>
             </div>
@@ -679,9 +685,9 @@ export default function AdminDashboard() {
         {tab === "blog" && (
           <div style={card}>
             <div style={{ marginBottom: 12 }}>
-              <h2 style={{ ...sectionHeader, marginBottom: 4 }}>Blog</h2>
+              <h2 style={{ ...sectionHeader, marginBottom: 4 }}>{publicTabLabel("blog")}</h2>
               <p style={{ fontSize: 12, color: "#6b7280" }}>
-                Rich content shown on the Blog tab. Supports headings, bold, lists, and hyperlinks.
+                Rich content shown on the {publicTabLabel("blog")} tab. Supports headings, bold, lists, and hyperlinks.
               </p>
             </div>
             <RichTextEditor
