@@ -25,7 +25,7 @@ type GroupMember = {
 };
 
 const groupSections: { key: GroupSectionKey; title: string }[] = [
-  { key: "keyCoInvestigators", title: "Key Co-investigators" },
+  { key: "keyCoInvestigators", title: "Key Co-Investigators" },
   { key: "currentStudents", title: "Current Students" },
   { key: "alumni", title: "Alumni" },
 ];

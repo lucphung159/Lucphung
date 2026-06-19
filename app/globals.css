@@ -41,7 +41,6 @@ a:hover {
   border-bottom: 2px solid var(--accent);
   padding-bottom: 0.25rem;
   margin-bottom: 1rem;
-  text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
