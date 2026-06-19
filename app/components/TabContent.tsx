@@ -67,6 +67,15 @@ function normalizeTabs(tabOrder?: TabItem[]) {
   ];
 }
 
+function renderLineBreaks(text: string) {
+  return text.split("--line").map((part, index, parts) => (
+    <span key={`${part}-${index}`}>
+      {part}
+      {index < parts.length - 1 && <br />}
+    </span>
+  ));
+}
+
 export function TabContent({ news, publicationSections, groupMembers, openings, blog, contact, tabOrder }: Props) {
   const tabs = normalizeTabs(tabOrder);
   const [tab, setTab] = useState<TabKey>(tabs[0]?.key || "publications");
@@ -125,7 +134,7 @@ export function TabContent({ news, publicationSections, groupMembers, openings, 
           <section style={{ marginBottom: "2.5rem" }}>
             <h2 className="section-title">Contact</h2>
             <p style={{ color: "var(--muted)", fontSize: "0.9rem", lineHeight: 1.8 }}>
-              {contact.address && <>{contact.address}<br /></>}
+              {contact.address && <>{renderLineBreaks(contact.address)}<br /></>}
               {contact.office && <>Office: {contact.office}<br /></>}
               {contact.email && (
                 <>Email: <a href={`mailto:${contact.email}`} style={{ color: "var(--accent-light)" }}>{contact.email}</a></>

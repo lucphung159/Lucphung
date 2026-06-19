@@ -715,7 +715,18 @@ export default function AdminDashboard() {
           <div style={card}>
             <h2 style={sectionHeader}>Contact Information</h2>
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              {(["address", "office", "email"] as const).map((key) => (
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#374151", marginBottom: 4 }}>address</label>
+                <textarea
+                  value={content.contact.address}
+                  onChange={(e) => setContent((c) => ({ ...c, contact: { ...c.contact, address: e.target.value } }))}
+                  rows={3}
+                  placeholder="Use --line where you want a new line"
+                  style={{ ...inputStyle, width: "100%", padding: "7px 12px", borderRadius: 8, fontSize: 13, outline: "none", resize: "vertical" }}
+                />
+                <p style={{ marginTop: 4, color: "#6b7280", fontSize: 11 }}>Use <code>--line</code> to create a new line on the public page.</p>
+              </div>
+              {(["office", "email"] as const).map((key) => (
                 <Field key={key} label={key} value={content.contact[key]}
                   onChange={(v) => setContent((c) => ({ ...c, contact: { ...c.contact, [key]: v } }))} />
               ))}
