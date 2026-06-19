@@ -113,3 +113,109 @@ a:hover {
   font-weight: 700;
   color: #1f2937;
 }
+
+.member-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.member-card {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+  min-height: 150px;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.member-photo-wrap {
+  position: relative;
+  flex: 0 0 auto;
+  width: 112px;
+  display: flex;
+  justify-content: center;
+}
+
+.member-photo {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--highlight);
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.member-badge {
+  position: absolute;
+  bottom: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 128px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 3px 9px;
+  border-radius: 999px;
+  text-align: center;
+  white-space: normal;
+}
+
+.member-info {
+  min-width: 0;
+  flex: 1;
+  color: var(--muted);
+}
+
+.member-name {
+  color: var(--accent-light);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.member-role {
+  margin-top: 0.25rem;
+  font-size: 0.88rem;
+}
+
+.member-advisor {
+  margin-top: 0.2rem;
+  font-size: 0.82rem;
+}
+
+.member-research {
+  margin-top: 0.35rem;
+  font-size: 0.82rem;
+  font-style: italic;
+}
+
+@media (max-width: 520px) {
+  .member-card {
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .member-photo-wrap {
+    width: 86px;
+  }
+
+  .member-photo {
+    width: 78px;
+    height: 78px;
+  }
+
+  .member-badge {
+    max-width: 96px;
+    font-size: 0.58rem;
+    padding: 2px 7px;
+  }
+}

@@ -204,38 +204,40 @@ export function TabContent({ news, publicationSections, groupMembers, openings, 
           {groupMembers.length === 0 && (
             <p style={{ color: "var(--muted)", fontSize: "0.9rem" }}>No group members yet.</p>
           )}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))", gap: "1.25rem" }}>
+          <div className="member-list">
             {groupMembers.map((member, i) => (
-              <div key={i} style={{ border: "1px solid var(--border)", borderRadius: 12, padding: "1.25rem 1rem", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", background: "#fff", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
-                <div style={{ position: "relative", marginBottom: "0.75rem" }}>
-                  <div style={{ width: 100, height: 100, borderRadius: "50%", overflow: "hidden", background: "var(--highlight)", border: "2px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div key={i} className="member-card">
+                <div className="member-photo-wrap">
+                  <div className="member-photo">
                     {member.image ? (
                       <img src={member.image} alt={member.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                     ) : (
-                      <svg width="44" height="44" viewBox="0 0 80 80" fill="none">
+                      <svg width="50" height="50" viewBox="0 0 80 80" fill="none">
                         <circle cx="40" cy="30" r="20" fill="#c7d7ea" />
                         <ellipse cx="40" cy="75" rx="30" ry="20" fill="#c7d7ea" />
                       </svg>
                     )}
                   </div>
                   {member.badge && (
-                    <div style={{ position: "absolute", bottom: -8, left: "50%", transform: "translateX(-50%)", background: "var(--accent)", color: "#fff", fontSize: "0.6rem", fontWeight: 600, padding: "2px 7px", borderRadius: 20, whiteSpace: "nowrap" }}>
+                    <div className="member-badge">
                       {member.badge}
                     </div>
                   )}
                 </div>
-                <div style={{ marginTop: member.badge ? "0.6rem" : 0 }}>
-                  {member.nameHref ? (
-                    <a href={member.nameHref} target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent-light)", fontWeight: 600, fontSize: "0.95rem" }}>
-                      {member.name}
-                    </a>
-                  ) : (
-                    <span style={{ color: "var(--accent-light)", fontWeight: 600, fontSize: "0.95rem" }}>{member.name}</span>
-                  )}
+                <div className="member-info">
+                  <div>
+                    {member.nameHref ? (
+                      <a href={member.nameHref} target="_blank" rel="noopener noreferrer" className="member-name">
+                        {member.name}
+                      </a>
+                    ) : (
+                      <span className="member-name">{member.name}</span>
+                    )}
+                  </div>
+                  {member.role && <div className="member-role">{member.role}</div>}
+                  {member.coAdvise && <div className="member-advisor">{member.coAdvise}</div>}
+                  {member.research && <div className="member-research">{member.research}</div>}
                 </div>
-                {member.role && <div style={{ fontSize: "0.78rem", color: "var(--muted)", marginTop: "0.2rem" }}>{member.role}</div>}
-                {member.coAdvise && <div style={{ fontSize: "0.75rem", color: "var(--muted)", marginTop: "0.15rem" }}>{member.coAdvise}</div>}
-                {member.research && <div style={{ fontSize: "0.75rem", color: "var(--muted)", fontStyle: "italic", marginTop: "0.25rem" }}>{member.research}</div>}
               </div>
             ))}
           </div>
