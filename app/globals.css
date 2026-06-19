@@ -13,6 +13,7 @@
 }
 
 html {
+  font-size: 20px;
   scroll-behavior: smooth;
 }
 
@@ -202,6 +203,10 @@ a:hover {
 }
 
 @media (max-width: 520px) {
+  html {
+    font-size: 18px;
+  }
+
   .member-list {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   }
