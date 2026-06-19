@@ -36,7 +36,6 @@ interface Props {
   publicationSections: PubSection[];
   groupMembers: GroupMember[];
   openings: string;
-  blog: string;
   contact: { address: string; office: string; email: string };
   tabOrder?: TabItem[];
 }
@@ -48,13 +47,12 @@ const badgeLabel: Record<string, string> = {
   paper: "Paper", award: "Award", talk: "Talk", misc: "News",
 };
 
-type TabKey = "publications" | "labMembers" | "blog" | "aboutMe" | "openings";
+type TabKey = "publications" | "labMembers" | "aboutMe" | "openings";
 type TabItem = { key: TabKey; label: string };
 
 const defaultTabs: TabItem[] = [
   { key: "publications", label: "Publications" },
   { key: "labMembers", label: "Lab Members" },
-  { key: "blog", label: "Blog" },
   { key: "aboutMe", label: "About Me" },
   { key: "openings", label: "Openings" },
 ];
@@ -109,7 +107,7 @@ function MemberRole({ role }: { role: string }) {
   );
 }
 
-export function TabContent({ news, aboutIntro, publicationSections, groupMembers, openings, blog, contact, tabOrder }: Props) {
+export function TabContent({ news, aboutIntro, publicationSections, groupMembers, openings, contact, tabOrder }: Props) {
   const tabs = normalizeTabs(tabOrder);
   const [tab, setTab] = useState<TabKey>(tabs[0]?.key || "publications");
 
@@ -132,7 +130,7 @@ export function TabContent({ news, aboutIntro, publicationSections, groupMembers
             style={{
               padding: "0.65rem 0.5rem",
               fontSize: "0.9rem",
-              fontWeight: 400,
+              fontWeight: 700,
               color: tab === t.key ? "#c0392b" : "#333",
               background: tab === t.key ? "#f5f5f5" : "#fff",
               border: "none",
@@ -301,17 +299,6 @@ export function TabContent({ news, aboutIntro, publicationSections, groupMembers
               </section>
             );
           })}
-        </div>
-      )}
-
-      {/* -------- Blog -------- */}
-      {tab === "blog" && (
-        <div style={{ marginBottom: "2.5rem" }}>
-          {blog ? (
-            <div className="openings-content" dangerouslySetInnerHTML={{ __html: blog }} />
-          ) : (
-            <p style={{ color: "var(--muted)", fontSize: "0.9rem" }}>No blog posts yet.</p>
-          )}
         </div>
       )}
 

@@ -58,7 +58,7 @@ const TabOrderItemSchema = new Schema(
   {
     key: {
       type: String,
-      enum: ["publications", "labMembers", "blog", "aboutMe", "openings"],
+      enum: ["publications", "labMembers", "aboutMe", "openings"],
       required: true,
     },
     label: { type: String, default: "" },
@@ -125,7 +125,6 @@ const ContentSchema = new Schema(
       default: [
         { key: "publications", label: "Publications" },
         { key: "labMembers", label: "Lab Members" },
-        { key: "blog", label: "Blog" },
         { key: "aboutMe", label: "About Me" },
         { key: "openings", label: "Openings" },
       ],

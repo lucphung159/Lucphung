@@ -22,13 +22,12 @@ const groupSections: { key: GroupSectionKey; title: string }[] = [
   { key: "currentStudents", title: "Current Students" },
   { key: "alumni", title: "Alumni" },
 ];
-type PublicTabKey = "publications" | "labMembers" | "blog" | "aboutMe" | "openings";
+type PublicTabKey = "publications" | "labMembers" | "aboutMe" | "openings";
 type PublicTabItem = { key: PublicTabKey; label: string };
 
 const defaultPublicTabs: PublicTabItem[] = [
   { key: "publications", label: "Publications" },
   { key: "labMembers", label: "Lab Members" },
-  { key: "blog", label: "Blog" },
   { key: "aboutMe", label: "About Me" },
   { key: "openings", label: "Openings" },
 ];
@@ -62,7 +61,7 @@ const defaultContent: PageContent = {
   contact: { address: "", office: "", email: "" },
 };
 
-type Tab = "profile" | "news" | "aboutMe" | "publications" | "group" | "mainTabs" | "openings" | "blog" | "contact";
+type Tab = "profile" | "news" | "aboutMe" | "publications" | "group" | "mainTabs" | "openings" | "contact";
 
 const inputStyle = { border: "1px solid #d1d5db", background: "#f9fafb" };
 
@@ -326,7 +325,6 @@ export default function AdminDashboard() {
     { key: "group", label: publicTabLabel("labMembers") },
     { key: "mainTabs", label: "Main Tabs" },
     { key: "openings", label: publicTabLabel("openings") },
-    { key: "blog", label: publicTabLabel("blog") },
     { key: "contact", label: "Contact" },
   ];
 
@@ -366,7 +364,7 @@ export default function AdminDashboard() {
               style={{
                 padding: "8px 16px",
                 fontSize: 13,
-                fontWeight: 500,
+                fontWeight: 700,
                 color: tab === t.key ? "#1e3a5f" : "#6b7280",
                 background: "none",
                 border: "none",
@@ -702,6 +700,7 @@ export default function AdminDashboard() {
                     padding: "10px 8px",
                     textAlign: "center",
                     fontSize: 12,
+                    fontWeight: 700,
                     color: index === 0 ? "#c0392b" : "#333",
                     background: index === 0 ? "#f5f5f5" : "#fff",
                     borderLeft: index > 0 ? "1px solid #e5e7eb" : "none",
@@ -739,35 +738,6 @@ export default function AdminDashboard() {
                   className="openings-content"
                   style={{ border: "1px solid #e5e7eb", borderRadius: 8, padding: "1rem", background: "#fafafa" }}
                   dangerouslySetInnerHTML={{ __html: content.openings }}
-                />
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* =================== BLOG =================== */}
-        {tab === "blog" && (
-          <div style={card}>
-            <div style={{ marginBottom: 12 }}>
-              <h2 style={{ ...sectionHeader, marginBottom: 4 }}>{publicTabLabel("blog")}</h2>
-              <p style={{ fontSize: 12, color: "#6b7280" }}>
-                Rich content shown on the {publicTabLabel("blog")} tab. Supports headings, bold, lists, and hyperlinks.
-              </p>
-            </div>
-            <RichTextEditor
-              value={content.blog}
-              onChange={(v) => setContent((c) => ({ ...c, blog: v }))}
-              placeholder="Write blog content here..."
-              minRows={16}
-              toolbar="full"
-            />
-            {content.blog && (
-              <div style={{ marginTop: 16 }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: "#374151", marginBottom: 8 }}>Preview</div>
-                <div
-                  className="openings-content"
-                  style={{ border: "1px solid #e5e7eb", borderRadius: 8, padding: "1rem", background: "#fafafa" }}
-                  dangerouslySetInnerHTML={{ __html: content.blog }}
                 />
               </div>
             )}

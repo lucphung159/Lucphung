@@ -45,7 +45,7 @@ interface PageData {
     image?: string;
   }[];
   tabOrder?: {
-    key: "publications" | "labMembers" | "blog" | "aboutMe" | "openings";
+    key: "publications" | "labMembers" | "aboutMe" | "openings";
     label: string;
   }[];
   openings: string;
@@ -57,7 +57,7 @@ export const revalidate = 0;
 
 export default async function Home() {
   const data = await getContent();
-  const { profile, news, aboutIntro, publicationSections, groupMembers, tabOrder, openings, blog, contact } = data;
+  const { profile, news, aboutIntro, publicationSections, groupMembers, tabOrder, openings, contact } = data;
   const headerName = profile.headerName || profile.name;
 
   const links = [
@@ -187,7 +187,6 @@ export default async function Home() {
           publicationSections={publicationSections || []}
           groupMembers={groupMembers || []}
           openings={openings || ""}
-          blog={blog || ""}
           contact={contact || { address: "", office: "", email: "" }}
           tabOrder={tabOrder}
         />
