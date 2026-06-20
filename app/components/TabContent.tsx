@@ -12,7 +12,7 @@ type PubSectionItem = {
   venue: string;
   links: PubLink[];
 };
-type PubSection = { title: string; publicationsList: PubSectionItem[] };
+type PubSection = { title: string; note?: string; publicationsList: PubSectionItem[] };
 type GroupSectionKey = "keyCoInvestigators" | "currentStudents" | "alumni";
 type GroupMember = {
   name: string;
@@ -210,6 +210,12 @@ export function TabContent({ news, aboutIntro, publicationSections, groupMembers
           {publicationSections.map((section, si) => (
             <div key={si} style={{ marginBottom: "2rem" }}>
               <h2 className="section-title">{section.title}</h2>
+              {section.note && (
+                <div
+                  className="rich-text-content publication-note"
+                  dangerouslySetInnerHTML={richTextHtml(section.note)}
+                />
+              )}
               <ul style={{ listStyle: "disc", paddingLeft: "1.25rem", margin: 0 }}>
                 {section.publicationsList.map((pub, pi) => (
                   <li key={pi} style={{ marginBottom: "1rem", lineHeight: 1.6 }}>

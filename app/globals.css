@@ -81,6 +81,13 @@ a:hover {
   border-bottom: none;
 }
 
+.publication-note {
+  margin: -0.45rem 0 1rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
 .news-item {
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr);

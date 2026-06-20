@@ -37,6 +37,7 @@ const PubSectionItemSchema = new Schema({
 
 const PubSectionSchema = new Schema({
   title: { type: String, default: "" }, // e.g. "Recent Preprints"
+  note: { type: String, default: "" },
   publicationsList: { type: [PubSectionItemSchema], default: [] },
 });
 

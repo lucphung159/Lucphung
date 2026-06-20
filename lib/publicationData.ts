@@ -1,6 +1,7 @@
 export const defaultPublicationSections = [
   {
     title: "Publications (*Corresponding author)",
+    note: "",
     publicationsList: [
       {
         badge: "",

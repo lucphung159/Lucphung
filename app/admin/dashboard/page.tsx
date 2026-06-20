@@ -10,7 +10,7 @@ type PubSectionItem = {
   badge: string; title: string; titleHref: string;
   authors: string; venue: string; links: PubLink[];
 };
-type PubSection = { title: string; publicationsList: PubSectionItem[] };
+type PubSection = { title: string; note: string; publicationsList: PubSectionItem[] };
 type GroupSectionKey = "keyCoInvestigators" | "currentStudents" | "alumni";
 type GroupMember = {
   name: string; nameHref: string; role: string; research: string;
@@ -101,6 +101,14 @@ function normalizeGroupMembers(groupMembers?: Partial<GroupMember>[]) {
   }));
 }
 
+function normalizePublicationSections(publicationSections?: Partial<PubSection>[]) {
+  return (publicationSections || []).map((section) => ({
+    title: section.title || "",
+    note: section.note || "",
+    publicationsList: section.publicationsList || [],
+  }));
+}
+
 function normalizePublicTabs(tabOrder?: PublicTabItem[]) {
   const seen = new Set<PublicTabKey>();
   const validKeys = new Set(defaultPublicTabs.map((tab) => tab.key));
@@ -152,7 +160,7 @@ export default function AdminDashboard() {
       },
       news: data.news || [],
       aboutIntro: data.aboutIntro || "",
-      publicationSections: data.publicationSections || [],
+      publicationSections: normalizePublicationSections(data.publicationSections),
       groupMembers: normalizeGroupMembers(data.groupMembers),
       tabOrder: normalizePublicTabs(data.tabOrder),
       openings: data.openings || "",
@@ -197,7 +205,7 @@ export default function AdminDashboard() {
 
   // Publication section helpers
   function addSection() {
-    setContent((c) => ({ ...c, publicationSections: [{ title: "New Section", publicationsList: [] }, ...c.publicationSections] }));
+    setContent((c) => ({ ...c, publicationSections: [{ title: "New Section", note: "", publicationsList: [] }, ...c.publicationSections] }));
   }
   function removeSection(si: number) {
     setContent((c) => ({ ...c, publicationSections: c.publicationSections.filter((_, j) => j !== si) }));
@@ -215,6 +223,13 @@ export default function AdminDashboard() {
     setContent((c) => {
       const secs = [...c.publicationSections];
       secs[si] = { ...secs[si], title: val };
+      return { ...c, publicationSections: secs };
+    });
+  }
+  function setSectionNote(si: number, val: string) {
+    setContent((c) => {
+      const secs = [...c.publicationSections];
+      secs[si] = { ...secs[si], note: val };
       return { ...c, publicationSections: secs };
     });
   }
@@ -567,6 +582,17 @@ export default function AdminDashboard() {
                   <button onClick={() => removeSection(si)} style={{ fontSize: 12, padding: "6px 10px", borderRadius: 8, background: "#fee2e2", color: "#b91c1c", border: "none", cursor: "pointer" }}>
                     ✕ Remove Section
                   </button>
+                </div>
+
+                <div style={{ marginBottom: 14 }}>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#374151", marginBottom: 4 }}>Section Note</label>
+                  <RichTextEditor
+                    value={section.note}
+                    onChange={(v) => setSectionNote(si, v)}
+                    placeholder="Optional note shown below this section title..."
+                    minRows={2}
+                  />
+                  <p style={{ marginTop: 4, color: "#6b7280", fontSize: 11 }}>Use the toolbar for formatting. Use <code>/n</code> to create a new line on the public page.</p>
                 </div>
 
                 {section.publicationsList.length === 0 && (

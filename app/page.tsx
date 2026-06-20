@@ -44,6 +44,7 @@ interface PageData {
   aboutIntro: string;
   publicationSections: {
     title: string;
+    note?: string;
     publicationsList: {
       badge?: string; title: string; titleHref?: string;
       authors: string; venue: string;
