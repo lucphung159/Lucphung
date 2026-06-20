@@ -12,6 +12,16 @@ interface Props {
 export function RichTextEditor({ value, onChange, placeholder, minRows = 2, toolbar = "basic" }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const lastValueRef = useRef<string | null>(null);
+  const savedRangeRef = useRef<Range | null>(null);
+
+  const textColors = [
+    { label: "Dark", value: "#1f2937" },
+    { label: "Gray", value: "#6b7280" },
+    { label: "Blue", value: "#1e3a5f" },
+    { label: "Red", value: "#c0392b" },
+    { label: "Green", value: "#15803d" },
+    { label: "Gold", value: "#b45309" },
+  ];
 
   useEffect(() => {
     if (ref.current && value !== lastValueRef.current) {
@@ -26,9 +36,29 @@ export function RichTextEditor({ value, onChange, placeholder, minRows = 2, tool
     onChange(html);
   }, [onChange]);
 
+  function saveSelection() {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+    const anchorNode = selection.anchorNode;
+    if (anchorNode && ref.current?.contains(anchorNode)) {
+      savedRangeRef.current = selection.getRangeAt(0).cloneRange();
+    }
+  }
+
+  function restoreSelection() {
+    const selection = window.getSelection();
+    const range = savedRangeRef.current;
+    if (!selection || !range) return;
+
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+
   function execCmd(cmd: string, val?: string) {
     ref.current?.focus();
+    restoreSelection();
     document.execCommand(cmd, false, val);
+    saveSelection();
     emit();
   }
 
@@ -60,6 +90,15 @@ export function RichTextEditor({ value, onChange, placeholder, minRows = 2, tool
     cursor: "pointer",
   };
 
+  const colorButtonStyle = {
+    width: 20,
+    height: 20,
+    borderRadius: 999,
+    border: "1px solid #cbd5e1",
+    cursor: "pointer",
+    padding: 0,
+  };
+
   return (
     <div style={{ border: "1px solid #d1d5db", borderRadius: 8, overflow: "hidden", background: "#f9fafb" }}>
       <div style={{ borderBottom: "1px solid #e5e7eb", background: "#f3f4f6", padding: "4px 8px", display: "flex", gap: 4, flexWrap: "wrap", alignItems: "center" }}>
@@ -69,6 +108,33 @@ export function RichTextEditor({ value, onChange, placeholder, minRows = 2, tool
           style={{ ...btnStyle, fontStyle: "italic" }}>I</button>
         <button type="button" title="Underline" onMouseDown={(e) => { e.preventDefault(); execCmd("underline"); }}
           style={{ ...btnStyle, textDecoration: "underline" }}>U</button>
+
+        <span style={{ color: "#d1d5db", margin: "0 2px" }}>|</span>
+        <span style={{ fontSize: 11, color: "#6b7280", fontWeight: 600, margin: "0 2px" }}>Color</span>
+        {textColors.map((color) => (
+          <button
+            key={color.value}
+            type="button"
+            title={`${color.label} text`}
+            onMouseDown={(e) => { e.preventDefault(); execCmd("foreColor", color.value); }}
+            style={{ ...colorButtonStyle, background: color.value }}
+            aria-label={`${color.label} text color`}
+          />
+        ))}
+        <label
+          title="Custom text color"
+          style={{ ...btnStyle, display: "inline-flex", alignItems: "center", gap: 5, padding: "2px 7px" }}
+        >
+          A
+          <input
+            type="color"
+            defaultValue="#1f2937"
+            onMouseDown={saveSelection}
+            onChange={(e) => execCmd("foreColor", e.target.value)}
+            style={{ width: 18, height: 18, border: "none", padding: 0, background: "transparent", cursor: "pointer" }}
+            aria-label="Custom text color"
+          />
+        </label>
 
         {toolbar === "full" && (
           <>
@@ -97,7 +163,9 @@ export function RichTextEditor({ value, onChange, placeholder, minRows = 2, tool
         ref={ref}
         contentEditable
         suppressContentEditableWarning
-        onInput={emit}
+        onInput={() => { saveSelection(); emit(); }}
+        onKeyUp={saveSelection}
+        onMouseUp={saveSelection}
         data-placeholder={placeholder}
         style={{
           minHeight: `${minRows * 1.6}rem`,
