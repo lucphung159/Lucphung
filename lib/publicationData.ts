@@ -1,6 +1,6 @@
 export const GOOGLE_SCHOLAR_PROFILE_URL = "https://scholar.google.com/citations?user=iY6dOIEAAAAJ&hl=en";
 export const SELECTED_PAPERS_SECTION_TITLE = "Selected Papers";
-export const SELECTED_PAPERS_SOURCE_VERSION = "google-scholar-iY6dOIEAAAAJ-2026-06-20";
+export const SELECTED_PAPERS_SOURCE_VERSION = "google-scholar-iY6dOIEAAAAJ-2026-06-20-newest-first";
 
 const selectedPaperItems = [
     {
@@ -197,12 +197,21 @@ const selectedPaperItems = [
     }
 ];
 
+function getPublicationYear(venue: string) {
+  const years = venue.match(/\b(?:19|20)\d{2}\b/g);
+  return years ? Number(years[years.length - 1]) : 0;
+}
+
+const orderedSelectedPaperItems = [...selectedPaperItems].sort((paperA, paperB) => (
+  getPublicationYear(paperB.venue) - getPublicationYear(paperA.venue)
+));
+
 export const defaultPublicationSections = [
   {
     title: SELECTED_PAPERS_SECTION_TITLE,
     note: `For an up-to-date and complete publication list, please visit my <a href="${GOOGLE_SCHOLAR_PROFILE_URL}" target="_blank" rel="noopener noreferrer">Google Scholar profile</a>.`,
     sourceVersion: SELECTED_PAPERS_SOURCE_VERSION,
-    publicationsList: selectedPaperItems,
+    publicationsList: orderedSelectedPaperItems,
   },
 ];
 
