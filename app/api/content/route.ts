@@ -4,15 +4,18 @@ export const dynamic = "force-dynamic";
 import { connectDB } from "@/lib/mongodb";
 import { Content } from "@/lib/models/Content";
 import { verifyToken } from "@/lib/jwt";
-import { getDefaultPublicationSections, needsPublicationSeed } from "@/lib/publicationData";
+import { getDefaultPublicationSections, syncPublicationSections } from "@/lib/publicationData";
 
 export async function GET() {
   await connectDB();
   let found = await Content.findOne({ type: "page_content" }).lean() as Record<string, unknown> | null;
-  if (found && needsPublicationSeed(found.publicationSections)) {
+  if (found) {
+    const synced = syncPublicationSections(found.publicationSections);
+    if (!synced.changed) return NextResponse.json(found);
+
     found = await Content.findOneAndUpdate(
       { type: "page_content" },
-      { $set: { publicationSections: getDefaultPublicationSections() } },
+      { $set: { publicationSections: synced.publicationSections } },
       { new: true }
     ).lean() as Record<string, unknown> | null;
   }

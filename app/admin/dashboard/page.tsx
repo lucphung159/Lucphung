@@ -10,7 +10,7 @@ type PubSectionItem = {
   badge: string; title: string; titleHref: string;
   authors: string; venue: string; links: PubLink[];
 };
-type PubSection = { title: string; note: string; publicationsList: PubSectionItem[] };
+type PubSection = { title: string; note: string; sourceVersion?: string; publicationsList: PubSectionItem[] };
 type GroupSectionKey = "keyCoInvestigators" | "currentStudents" | "alumni";
 type GroupMember = {
   name: string; nameHref: string; role: string; research: string;
@@ -105,6 +105,7 @@ function normalizePublicationSections(publicationSections?: Partial<PubSection>[
   return (publicationSections || []).map((section) => ({
     title: section.title || "",
     note: section.note || "",
+    sourceVersion: section.sourceVersion || "",
     publicationsList: section.publicationsList || [],
   }));
 }
@@ -205,7 +206,7 @@ export default function AdminDashboard() {
 
   // Publication section helpers
   function addSection() {
-    setContent((c) => ({ ...c, publicationSections: [{ title: "New Section", note: "", publicationsList: [] }, ...c.publicationSections] }));
+    setContent((c) => ({ ...c, publicationSections: [{ title: "New Section", note: "", sourceVersion: "", publicationsList: [] }, ...c.publicationSections] }));
   }
   function removeSection(si: number) {
     setContent((c) => ({ ...c, publicationSections: c.publicationSections.filter((_, j) => j !== si) }));

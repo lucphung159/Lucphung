@@ -1,7 +1,7 @@
 import { connectDB } from "@/lib/mongodb";
 import { Content } from "@/lib/models/Content";
 import { TabContent } from "@/app/components/TabContent";
-import { getDefaultPublicationSections, needsPublicationSeed } from "@/lib/publicationData";
+import { getDefaultPublicationSections, syncPublicationSections } from "@/lib/publicationData";
 import { formatRichTextHtml } from "@/lib/richText";
 
 async function getContent() {
@@ -13,10 +13,13 @@ async function getContent() {
       publicationSections: getDefaultPublicationSections(),
     });
     doc = created.toObject();
-  } else if (needsPublicationSeed(doc.publicationSections)) {
+  } else {
+    const synced = syncPublicationSections(doc.publicationSections);
+    if (!synced.changed) return doc as unknown as PageData;
+
     doc = await Content.findOneAndUpdate(
       { type: "page_content" },
-      { $set: { publicationSections: getDefaultPublicationSections() } },
+      { $set: { publicationSections: synced.publicationSections } },
       { new: true }
     ).lean() as Record<string, unknown> | null;
   }
@@ -45,6 +48,7 @@ interface PageData {
   publicationSections: {
     title: string;
     note?: string;
+    sourceVersion?: string;
     publicationsList: {
       badge?: string; title: string; titleHref?: string;
       authors: string; venue: string;
