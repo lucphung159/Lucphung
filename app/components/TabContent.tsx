@@ -88,6 +88,30 @@ function splitMemberRole(role: string) {
     : { role, intake: "" };
 }
 
+function getPublicationYear(pub: PubSectionItem) {
+  const yearSource = `${pub.badge || ""} ${pub.venue || ""}`;
+  const years = yearSource.match(/\b(?:19|20)\d{2}\b/g);
+  return years ? Number(years[years.length - 1]) : 0;
+}
+
+function sectionLooksLikeSelectedPapers(section: PubSection) {
+  const title = section.title.toLowerCase();
+  return title === "selected papers" ||
+    title.includes("selected publication") ||
+    title.includes("publications (*corresponding author)");
+}
+
+function normalizePublicationSection(section: PubSection) {
+  if (!sectionLooksLikeSelectedPapers(section)) return section;
+
+  return {
+    ...section,
+    publicationsList: [...section.publicationsList].sort((paperA, paperB) => (
+      getPublicationYear(paperB) - getPublicationYear(paperA)
+    )),
+  };
+}
+
 function MemberRole({ role }: { role: string }) {
   const parts = splitMemberRole(role);
 
@@ -101,6 +125,7 @@ function MemberRole({ role }: { role: string }) {
 
 export function TabContent({ news, aboutIntro, publicationSections, groupMembers, openings, contact, tabOrder }: Props) {
   const tabs = normalizeTabs(tabOrder);
+  const normalizedPublicationSections = publicationSections.map(normalizePublicationSection);
   const [tab, setTab] = useState<TabKey>(tabs[0]?.key || "publications");
 
   useEffect(() => {
@@ -204,10 +229,10 @@ export function TabContent({ news, aboutIntro, publicationSections, groupMembers
       {/* -------- Publications -------- */}
       {tab === "publications" && (
         <div style={{ marginBottom: "2.5rem" }}>
-          {publicationSections.length === 0 && (
+          {normalizedPublicationSections.length === 0 && (
             <p style={{ color: "var(--muted)", fontSize: "0.9rem" }}>No publications yet.</p>
           )}
-          {publicationSections.map((section, si) => (
+          {normalizedPublicationSections.map((section, si) => (
             <div key={si} style={{ marginBottom: "2rem" }}>
               <h2 className="section-title">{section.title}</h2>
               {section.note && (

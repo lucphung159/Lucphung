@@ -1,6 +1,6 @@
 export const GOOGLE_SCHOLAR_PROFILE_URL = "https://scholar.google.com/citations?user=iY6dOIEAAAAJ&hl=en";
 export const SELECTED_PAPERS_SECTION_TITLE = "Selected Papers";
-export const SELECTED_PAPERS_SOURCE_VERSION = "google-scholar-iY6dOIEAAAAJ-2026-06-20-newest-first";
+export const SELECTED_PAPERS_SOURCE_VERSION = "google-scholar-iY6dOIEAAAAJ-2026-06-21-newest-first";
 
 const selectedPaperItems = [
     {
@@ -202,9 +202,17 @@ function getPublicationYear(venue: string) {
   return years ? Number(years[years.length - 1]) : 0;
 }
 
-const orderedSelectedPaperItems = [...selectedPaperItems].sort((paperA, paperB) => (
-  getPublicationYear(paperB.venue) - getPublicationYear(paperA.venue)
-));
+const orderedSelectedPaperItems = [...selectedPaperItems]
+  .sort((paperA, paperB) => (
+    getPublicationYear(paperB.venue) - getPublicationYear(paperA.venue)
+  ))
+  .map((paper) => {
+    const year = getPublicationYear(paper.venue);
+    return {
+      ...paper,
+      badge: paper.badge || (year ? String(year) : ""),
+    };
+  });
 
 export const defaultPublicationSections = [
   {
