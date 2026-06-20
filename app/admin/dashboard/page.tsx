@@ -247,6 +247,17 @@ export default function AdminDashboard() {
       return { ...c, publicationSections: secs };
     });
   }
+  function movePubInSection(si: number, fromIndex: number, toIndex: number) {
+    if (fromIndex === toIndex) return;
+    setContent((c) => {
+      const secs = [...c.publicationSections];
+      const pubs = [...secs[si].publicationsList];
+      const [moved] = pubs.splice(fromIndex, 1);
+      pubs.splice(toIndex, 0, moved);
+      secs[si] = { ...secs[si], publicationsList: pubs };
+      return { ...c, publicationSections: secs };
+    });
+  }
   function setPubField(si: number, pi: number, key: keyof Omit<PubSectionItem, "links">, val: string) {
     setContent((c) => {
       const secs = [...c.publicationSections];
@@ -553,7 +564,9 @@ export default function AdminDashboard() {
                 }}
                 onDrop={(event: DragEvent<HTMLDivElement>) => {
                   event.preventDefault();
-                  const fromIndex = Number(event.dataTransfer.getData("text/publication-section-index"));
+                  const rawFromIndex = event.dataTransfer.getData("text/publication-section-index");
+                  if (rawFromIndex === "") return;
+                  const fromIndex = Number(rawFromIndex);
                   if (!Number.isNaN(fromIndex)) moveSection(fromIndex, si);
                 }}
                 style={{ ...card, marginBottom: 20 }}
@@ -601,9 +614,38 @@ export default function AdminDashboard() {
 
                 <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                   {section.publicationsList.map((pub, pi) => (
-                    <div key={pi} style={{ border: "1px solid #e5e7eb", borderRadius: 10, padding: 14 }}>
+                    <div
+                      key={pi}
+                      onDragOver={(event: DragEvent<HTMLDivElement>) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        event.dataTransfer.dropEffect = "move";
+                      }}
+                      onDrop={(event: DragEvent<HTMLDivElement>) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        const fromSectionIndex = Number(event.dataTransfer.getData("text/publication-paper-section-index"));
+                        const fromPaperIndex = Number(event.dataTransfer.getData("text/publication-paper-index"));
+                        if (fromSectionIndex === si && !Number.isNaN(fromPaperIndex)) movePubInSection(si, fromPaperIndex, pi);
+                      }}
+                      style={{ border: "1px solid #e5e7eb", borderRadius: 10, padding: 14 }}
+                    >
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                        <span style={{ fontSize: 12, color: "#6b7280", fontWeight: 600 }}>Paper {pi + 1}</span>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <span
+                            draggable
+                            onDragStart={(event: DragEvent<HTMLSpanElement>) => {
+                              event.dataTransfer.setData("text/publication-paper-section-index", String(si));
+                              event.dataTransfer.setData("text/publication-paper-index", String(pi));
+                              event.dataTransfer.effectAllowed = "move";
+                            }}
+                            title="Drag to reorder paper"
+                            style={{ color: "#9ca3af", fontSize: 18, cursor: "grab", lineHeight: 1, userSelect: "none" }}
+                          >
+                            ≡
+                          </span>
+                          <span style={{ fontSize: 12, color: "#6b7280", fontWeight: 600 }}>Paper {pi + 1}</span>
+                        </div>
                         <button onClick={() => removePubFromSection(si, pi)} style={{ fontSize: 12, padding: "3px 8px", borderRadius: 6, background: "#fee2e2", color: "#b91c1c", border: "none", cursor: "pointer" }}>
                           ✕ Remove
                         </button>
