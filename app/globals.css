@@ -123,11 +123,14 @@ a:hover {
 
 .openings-description-box {
   border: 1px solid var(--border);
-  border-left: 4px solid var(--accent);
   border-radius: 6px;
   background: #f8faf9;
   padding: 1rem 1.1rem;
   margin-bottom: 2rem;
+}
+
+.openings-description-box .openings-content {
+  text-align: justify;
 }
 
 .openings-description-box .openings-content > :last-child,
