@@ -232,11 +232,6 @@ export default async function Home() {
         />
       </main>
 
-      <footer className="text-center text-xs py-6" style={{ color: "var(--muted)", borderTop: "1px solid var(--border)" }}>
-        © {new Date().getFullYear()} {profile.name}. Built with Next.js.
-        &nbsp;·&nbsp;
-        <a href="/admin" style={{ color: "var(--muted)" }}>Admin</a>
-      </footer>
     </div>
   );
 }
