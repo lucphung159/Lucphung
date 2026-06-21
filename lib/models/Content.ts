@@ -119,6 +119,18 @@ const ContentSchema = new Schema(
       type: String,
       default: "",
     },
+    openingsDescription: {
+      type: String,
+      default: "",
+    },
+    currentOpenings: {
+      type: String,
+      default: "",
+    },
+    howToApply: {
+      type: String,
+      default: "",
+    },
     blog: {
       type: String,
       default: "",

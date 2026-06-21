@@ -66,6 +66,9 @@ interface PageData {
     label: string;
   }[];
   openings: string;
+  openingsDescription?: string;
+  currentOpenings?: string;
+  howToApply?: string;
   blog: string;
   contact: { address: string; office: string; email: string };
 }
@@ -74,7 +77,19 @@ export const revalidate = 0;
 
 export default async function Home() {
   const data = await getContent();
-  const { profile, news, aboutIntro, publicationSections, groupMembers, tabOrder, openings, contact } = data;
+  const {
+    profile,
+    news,
+    aboutIntro,
+    publicationSections,
+    groupMembers,
+    tabOrder,
+    openings,
+    openingsDescription,
+    currentOpenings,
+    howToApply,
+    contact,
+  } = data;
   const headerName = profile.headerName || profile.name;
 
   const links = [
@@ -209,6 +224,9 @@ export default async function Home() {
           publicationSections={publicationSections || []}
           groupMembers={groupMembers || []}
           openings={openings || ""}
+          openingsDescription={openingsDescription || ""}
+          currentOpenings={currentOpenings || ""}
+          howToApply={howToApply || ""}
           contact={contact || { address: "", office: "", email: "" }}
           tabOrder={tabOrder}
         />

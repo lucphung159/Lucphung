@@ -45,6 +45,9 @@ interface PageContent {
   groupMembers: GroupMember[];
   tabOrder: PublicTabItem[];
   openings: string;
+  openingsDescription: string;
+  currentOpenings: string;
+  howToApply: string;
   blog: string;
   contact: { address: string; office: string; email: string };
 }
@@ -57,6 +60,9 @@ const defaultContent: PageContent = {
   groupMembers: [],
   tabOrder: defaultPublicTabs,
   openings: "",
+  openingsDescription: "",
+  currentOpenings: "",
+  howToApply: "",
   blog: "",
   contact: { address: "", office: "", email: "" },
 };
@@ -165,6 +171,9 @@ export default function AdminDashboard() {
       groupMembers: normalizeGroupMembers(data.groupMembers),
       tabOrder: normalizePublicTabs(data.tabOrder),
       openings: data.openings || "",
+      openingsDescription: data.openingsDescription || data.openings || "",
+      currentOpenings: data.currentOpenings || "",
+      howToApply: data.howToApply || "",
       blog: data.blog || "",
       contact: data.contact || { address: "", office: "", email: "" },
     });
@@ -830,25 +839,75 @@ export default function AdminDashboard() {
               <div>
                 <h2 style={{ ...sectionHeader, marginBottom: 4 }}>{publicTabLabel("openings")}</h2>
                 <p style={{ fontSize: 12, color: "#6b7280", marginBottom: 0 }}>
-                  Rich content shown on the {publicTabLabel("openings")} tab. Supports headings (H2, H3), bold, bullet lists, and hyperlinks.
+                  Structured content shown on the {publicTabLabel("openings")} tab. Each box supports rich text, bullet lists, and hyperlinks.
                 </p>
               </div>
             </div>
+            <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#374151", marginBottom: 6 }}>
+              Description
+            </label>
             <RichTextEditor
-              value={content.openings}
-              onChange={(v) => setContent((c) => ({ ...c, openings: v }))}
-              placeholder="Write openings content here... (e.g. position descriptions, requirements, how to apply)"
-              minRows={16}
+              value={content.openingsDescription}
+              onChange={(v) => setContent((c) => ({ ...c, openingsDescription: v, openings: v }))}
+              placeholder="Write a short overview for the Openings tab..."
+              minRows={6}
               toolbar="full"
             />
-            {content.openings && (
+            <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#374151", marginTop: 18, marginBottom: 6 }}>
+              Current Openings
+            </label>
+            <RichTextEditor
+              value={content.currentOpenings}
+              onChange={(v) => setContent((c) => ({ ...c, currentOpenings: v }))}
+              placeholder="List available roles, research themes, eligibility, or write that there are no openings..."
+              minRows={8}
+              toolbar="full"
+            />
+            <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#374151", marginTop: 18, marginBottom: 6 }}>
+              How to Apply?
+            </label>
+            <RichTextEditor
+              value={content.howToApply}
+              onChange={(v) => setContent((c) => ({ ...c, howToApply: v }))}
+              placeholder="Add application instructions, required documents, and contact details..."
+              minRows={8}
+              toolbar="full"
+            />
+            {(content.openingsDescription || content.currentOpenings || content.howToApply) && (
               <div style={{ marginTop: 16 }}>
                 <div style={{ fontSize: 12, fontWeight: 600, color: "#374151", marginBottom: 8 }}>Preview</div>
-                <div
-                  className="openings-content"
-                  style={{ border: "1px solid #e5e7eb", borderRadius: 8, padding: "1rem", background: "#fafafa" }}
-                  dangerouslySetInnerHTML={{ __html: content.openings }}
-                />
+                <div style={{ border: "1px solid #e5e7eb", borderRadius: 8, padding: "1rem", background: "#fafafa" }}>
+                  {content.openingsDescription && (
+                    <section className="openings-description-box">
+                      <div
+                        className="openings-content"
+                        dangerouslySetInnerHTML={{ __html: content.openingsDescription }}
+                      />
+                    </section>
+                  )}
+                  <section className="openings-section">
+                    <h2 className="section-title">Current Openings</h2>
+                    {content.currentOpenings ? (
+                      <div
+                        className="openings-content"
+                        dangerouslySetInnerHTML={{ __html: content.currentOpenings }}
+                      />
+                    ) : (
+                      <p style={{ color: "#6b7280", fontSize: "0.9rem" }}>No current openings listed.</p>
+                    )}
+                  </section>
+                  <section className="openings-section">
+                    <h2 className="section-title">How to Apply?</h2>
+                    {content.howToApply ? (
+                      <div
+                        className="openings-content"
+                        dangerouslySetInnerHTML={{ __html: content.howToApply }}
+                      />
+                    ) : (
+                      <p style={{ color: "#6b7280", fontSize: "0.9rem" }}>Application instructions will be added soon.</p>
+                    )}
+                  </section>
+                </div>
               </div>
             )}
           </div>

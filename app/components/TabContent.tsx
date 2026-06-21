@@ -37,6 +37,9 @@ interface Props {
   publicationSections: PubSection[];
   groupMembers: GroupMember[];
   openings: string;
+  openingsDescription?: string;
+  currentOpenings?: string;
+  howToApply?: string;
   contact: { address: string; office: string; email: string };
   tabOrder?: TabItem[];
 }
@@ -123,9 +126,22 @@ function MemberRole({ role }: { role: string }) {
   );
 }
 
-export function TabContent({ news, aboutIntro, publicationSections, groupMembers, openings, contact, tabOrder }: Props) {
+export function TabContent({
+  news,
+  aboutIntro,
+  publicationSections,
+  groupMembers,
+  openings,
+  openingsDescription,
+  currentOpenings,
+  howToApply,
+  contact,
+  tabOrder,
+}: Props) {
   const tabs = normalizeTabs(tabOrder);
   const normalizedPublicationSections = publicationSections.map(normalizePublicationSection);
+  const descriptionContent = openingsDescription || openings;
+  const hasOpeningsContent = Boolean(descriptionContent || currentOpenings || howToApply);
   const [tab, setTab] = useState<TabKey>(tabs[0]?.key || "publications");
 
   useEffect(() => {
@@ -353,12 +369,42 @@ export function TabContent({ news, aboutIntro, publicationSections, groupMembers
 
       {/* -------- Openings -------- */}
       {tab === "openings" && (
-        <div style={{ marginBottom: "2.5rem" }}>
-          {openings ? (
-            <div
-              className="openings-content"
-              dangerouslySetInnerHTML={{ __html: openings }}
-            />
+        <div className="openings-layout">
+          {hasOpeningsContent ? (
+            <>
+              {descriptionContent && (
+                <section className="openings-description-box">
+                  <div
+                    className="openings-content"
+                    dangerouslySetInnerHTML={{ __html: descriptionContent }}
+                  />
+                </section>
+              )}
+
+              <section className="openings-section">
+                <h2 className="section-title">Current Openings</h2>
+                {currentOpenings ? (
+                  <div
+                    className="openings-content"
+                    dangerouslySetInnerHTML={{ __html: currentOpenings }}
+                  />
+                ) : (
+                  <p style={{ color: "var(--muted)", fontSize: "0.9rem" }}>No current openings listed.</p>
+                )}
+              </section>
+
+              <section className="openings-section">
+                <h2 className="section-title">How to Apply?</h2>
+                {howToApply ? (
+                  <div
+                    className="openings-content"
+                    dangerouslySetInnerHTML={{ __html: howToApply }}
+                  />
+                ) : (
+                  <p style={{ color: "var(--muted)", fontSize: "0.9rem" }}>Application instructions will be added soon.</p>
+                )}
+              </section>
+            </>
           ) : (
             <p style={{ color: "var(--muted)", fontSize: "0.9rem" }}>No openings information yet.</p>
           )}
