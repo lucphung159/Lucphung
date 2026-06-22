@@ -208,20 +208,22 @@ export function TabContent({
           {news.length > 0 && (
             <section style={{ marginBottom: "2.5rem" }}>
               <h2 className="section-title">News</h2>
-              {news.map((item, i) => (
-                <div key={i} className="news-item">
-                  <span style={{ color: "var(--muted)", fontWeight: 500, fontSize: "0.85rem" }}>{item.date}</span>
-                  <div className="news-text">
-                    <span className={`badge ${badgeClass[item.type] || "badge-misc"}`}>
-                      {badgeLabel[item.type] || "News"}
-                    </span>
-                    <span
-                      className="rich-text-content rich-text-inline"
-                      dangerouslySetInnerHTML={richTextHtml(item.text)}
-                    />
+              <div className="news-scroll">
+                {news.map((item, i) => (
+                  <div key={i} className="news-item">
+                    <span style={{ color: "var(--muted)", fontWeight: 500, fontSize: "0.85rem" }}>{item.date}</span>
+                    <div className="news-text">
+                      <span className={`badge ${badgeClass[item.type] || "badge-misc"}`}>
+                        {badgeLabel[item.type] || "News"}
+                      </span>
+                      <span
+                        className="rich-text-content rich-text-inline"
+                        dangerouslySetInnerHTML={richTextHtml(item.text)}
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </section>
           )}
           <section id="contact" style={{ marginBottom: "2.5rem", scrollMarginTop: "4.5rem" }}>
