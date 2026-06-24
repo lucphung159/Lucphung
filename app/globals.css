@@ -25,6 +25,25 @@ body {
   line-height: 1.6;
 }
 
+.site-text {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.site-text p,
+.site-text li,
+.site-text .rich-text-content,
+.site-text .rich-text-content p,
+.site-text .rich-text-content div,
+.site-text .publication-note,
+.site-text .news-text,
+.site-text .openings-content,
+.site-text .openings-content p,
+.site-text .openings-content li {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
 a {
   color: var(--accent-light);
   text-decoration: none;
