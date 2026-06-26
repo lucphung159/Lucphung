@@ -42,6 +42,8 @@ interface Props {
   howToApply?: string;
   contact: { address: string; office: string; email: string };
   tabOrder?: TabItem[];
+  initialTab?: TabKey;
+  focusContact?: boolean;
 }
 
 const badgeClass: Record<string, string> = {
@@ -60,6 +62,13 @@ const defaultTabs: TabItem[] = [
   { key: "aboutMe", label: "About Me" },
   { key: "openings", label: "Openings" },
 ];
+
+const tabHref: Record<TabKey, string> = {
+  aboutMe: "/About",
+  labMembers: "/Group",
+  publications: "/Publications",
+  openings: "/Openings",
+};
 
 function normalizeTabs(tabOrder?: TabItem[]) {
   const seen = new Set<TabKey>();
@@ -137,16 +146,23 @@ export function TabContent({
   howToApply,
   contact,
   tabOrder,
+  initialTab,
+  focusContact,
 }: Props) {
   const tabs = normalizeTabs(tabOrder);
+  const defaultTab = tabs[0]?.key || "publications";
   const normalizedPublicationSections = publicationSections.map(normalizePublicationSection);
   const descriptionContent = openingsDescription || openings;
   const hasOpeningsContent = Boolean(descriptionContent || currentOpenings || howToApply);
-  const [tab, setTab] = useState<TabKey>(tabs[0]?.key || "publications");
+  const [tab, setTab] = useState<TabKey>(initialTab || defaultTab);
 
   useEffect(() => {
-    function openContactFromHash() {
-      if (window.location.hash !== "#contact") return;
+    setTab(initialTab || defaultTab);
+  }, [initialTab, defaultTab]);
+
+  useEffect(() => {
+    function scrollToContact() {
+      if (!focusContact && window.location.hash !== "#contact") return;
 
       setTab("aboutMe");
       window.setTimeout(() => {
@@ -154,11 +170,11 @@ export function TabContent({
       }, 0);
     }
 
-    openContactFromHash();
-    window.addEventListener("hashchange", openContactFromHash);
+    scrollToContact();
+    window.addEventListener("hashchange", scrollToContact);
 
-    return () => window.removeEventListener("hashchange", openContactFromHash);
-  }, []);
+    return () => window.removeEventListener("hashchange", scrollToContact);
+  }, [focusContact]);
 
   return (
     <div>
@@ -173,13 +189,16 @@ export function TabContent({
         }}
       >
         {tabs.map((t) => (
-          <button
+          <a
             key={t.key}
+            href={tabHref[t.key]}
             onClick={() => setTab(t.key)}
             style={{
+              display: "block",
               padding: "0.65rem 0.5rem",
               fontSize: "0.9rem",
               fontWeight: 700,
+              textAlign: "center",
               color: tab === t.key ? "#c0392b" : "#333",
               background: tab === t.key ? "#f5f5f5" : "#fff",
               border: "none",
@@ -188,7 +207,7 @@ export function TabContent({
             }}
           >
             {t.label}
-          </button>
+          </a>
         ))}
       </div>
 
