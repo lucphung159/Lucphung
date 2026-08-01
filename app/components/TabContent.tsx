@@ -1,4 +1,5 @@
 "use client";
+import type { MouseEvent } from "react";
 import { useEffect, useState } from "react";
 import { richTextHtml } from "@/lib/richText";
 
@@ -68,6 +69,16 @@ const tabHref: Record<TabKey, string> = {
   labMembers: "/Group",
   publications: "/Publications",
   openings: "/Openings",
+};
+
+const pathTab: Record<string, TabKey> = {
+  "/about": "aboutMe",
+  "/group": "labMembers",
+  "/publications": "publications",
+  "/publication": "publications",
+  "/openings": "openings",
+  "/opening": "openings",
+  "/contact": "aboutMe",
 };
 
 function normalizeTabs(tabOrder?: TabItem[]) {
@@ -160,6 +171,37 @@ export function TabContent({
     setTab(initialTab || defaultTab);
   }, [initialTab, defaultTab]);
 
+  function handleTabClick(event: MouseEvent<HTMLAnchorElement>, nextTab: TabKey) {
+    if (
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey ||
+      event.button !== 0
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    setTab(nextTab);
+
+    const href = tabHref[nextTab];
+    if (window.location.pathname !== href) {
+      window.history.pushState(null, "", href);
+    }
+  }
+
+  useEffect(() => {
+    function syncTabFromPath() {
+      const nextTab = pathTab[window.location.pathname.toLowerCase()] || initialTab || defaultTab;
+      setTab(nextTab);
+    }
+
+    window.addEventListener("popstate", syncTabFromPath);
+
+    return () => window.removeEventListener("popstate", syncTabFromPath);
+  }, [initialTab, defaultTab]);
+
   useEffect(() => {
     function scrollToContact() {
       if (!focusContact && window.location.hash !== "#contact") return;
@@ -192,7 +234,7 @@ export function TabContent({
           <a
             key={t.key}
             href={tabHref[t.key]}
-            onClick={() => setTab(t.key)}
+            onClick={(event) => handleTabClick(event, t.key)}
             style={{
               display: "block",
               padding: "0.65rem 0.5rem",
