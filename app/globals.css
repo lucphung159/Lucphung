@@ -133,15 +133,64 @@ a:hover {
 }
 
 .news-item {
-  display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
-  gap: 1rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.55rem;
   font-size: 0.9rem;
 }
 
-.news-item > span:first-child {
+.news-title-button {
+  width: 100%;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr) max-content;
+  gap: 1rem;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  padding: 0.45rem 0.55rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.news-title-button:hover,
+.news-title-button:focus-visible {
+  background: #f8fafc;
+  border-color: var(--border);
+  outline: none;
+}
+
+.news-date {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 500;
   white-space: nowrap;
+}
+
+.news-title-wrap {
+  min-width: 0;
+}
+
+.news-title {
+  color: #1f2937;
+  font-weight: 700;
+  margin-left: 0.45rem;
+}
+
+.news-toggle-mark {
+  color: var(--muted);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.news-body {
+  margin: 0.35rem 0 1rem;
+  padding: 0 0.75rem 0 8.65rem;
+  color: #374151;
+  line-height: 1.75;
+}
+
+.news-body > :last-child {
+  margin-bottom: 0;
 }
 
 .badge {
@@ -327,6 +376,19 @@ a:hover {
 @media (max-width: 520px) {
   html {
     font-size: 18px;
+  }
+
+  .news-title-button {
+    grid-template-columns: 1fr max-content;
+    gap: 0.35rem 0.75rem;
+  }
+
+  .news-date {
+    grid-column: 1 / -1;
+  }
+
+  .news-body {
+    padding-left: 0.55rem;
   }
 
   .member-list {

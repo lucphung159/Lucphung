@@ -135,6 +135,39 @@ function normalizePublicationSection(section: PubSection) {
   };
 }
 
+function plainText(value = "") {
+  return value
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, "\"")
+    .replace(/&#39;/g, "'")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function getNewsTitle(text: string) {
+  const emphasizedTitle = text.match(/<(?:strong|b|h[1-6])[^>]*>(.*?)<\/(?:strong|b|h[1-6])>/i);
+  if (emphasizedTitle) {
+    const title = plainText(emphasizedTitle[1]);
+    if (title) return title;
+  }
+
+  const firstLine = text
+    .split(/(?:\/n|\n|<br\s*\/?>|<\/p>|<\/div>)/i)
+    .map(plainText)
+    .find(Boolean);
+
+  if (firstLine) {
+    return firstLine.length > 140 ? `${firstLine.slice(0, 137).trim()}...` : firstLine;
+  }
+
+  const fallback = plainText(text);
+  return fallback.length > 140 ? `${fallback.slice(0, 137).trim()}...` : fallback || "News update";
+}
+
 function MemberRole({ role }: { role: string }) {
   const parts = splitMemberRole(role);
 
@@ -166,6 +199,7 @@ export function TabContent({
   const descriptionContent = openingsDescription || openings;
   const hasOpeningsContent = Boolean(descriptionContent || currentOpenings || howToApply);
   const [tab, setTab] = useState<TabKey>(initialTab || defaultTab);
+  const [expandedNewsIndex, setExpandedNewsIndex] = useState<number | null>(null);
 
   useEffect(() => {
     setTab(initialTab || defaultTab);
@@ -270,20 +304,39 @@ export function TabContent({
             <section style={{ marginBottom: "2.5rem" }}>
               <h2 className="section-title">News</h2>
               <div className="news-scroll">
-                {news.map((item, i) => (
-                  <div key={i} className="news-item">
-                    <span style={{ color: "var(--muted)", fontWeight: 500, fontSize: "0.85rem" }}>{item.date}</span>
-                    <div className="news-text">
-                      <span className={`badge ${badgeClass[item.type] || "badge-misc"}`}>
-                        {badgeLabel[item.type] || "News"}
-                      </span>
-                      <span
-                        className="rich-text-content rich-text-inline"
-                        dangerouslySetInnerHTML={richTextHtml(item.text)}
-                      />
+                {news.map((item, i) => {
+                  const isExpanded = expandedNewsIndex === i;
+
+                  return (
+                    <div key={i} className={`news-item ${isExpanded ? "news-item-expanded" : ""}`}>
+                      <button
+                        type="button"
+                        className="news-title-button"
+                        aria-expanded={isExpanded}
+                        onClick={() => setExpandedNewsIndex(isExpanded ? null : i)}
+                      >
+                        <span className="news-date">{item.date}</span>
+                        <span className="news-title-wrap">
+                          <span className={`badge ${badgeClass[item.type] || "badge-misc"}`}>
+                            {badgeLabel[item.type] || "News"}
+                          </span>
+                          <span className="news-title">{getNewsTitle(item.text)}</span>
+                        </span>
+                        <span className="news-toggle-mark" aria-hidden="true">
+                          {isExpanded ? "-" : "+"}
+                        </span>
+                      </button>
+                      {isExpanded && (
+                        <div className="news-body">
+                          <div
+                            className="rich-text-content"
+                            dangerouslySetInnerHTML={richTextHtml(item.text)}
+                          />
+                        </div>
+                      )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </section>
           )}
