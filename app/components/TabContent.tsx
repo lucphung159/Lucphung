@@ -345,12 +345,12 @@ export function TabContent({
                         onClick={() => setExpandedNewsIndex(isExpanded ? null : i)}
                       >
                         <span className="news-date">{item.date}</span>
-                        <span className="news-title-wrap">
+                        <span className="news-badge-wrap">
                           <span className={`badge ${badgeClass[item.type] || "badge-misc"}`}>
                             {badgeLabel[item.type] || "News"}
                           </span>
-                          <span className="news-title">{getNewsTitle(item.text)}</span>
                         </span>
+                        <span className="news-title">{getNewsTitle(item.text)}</span>
                         <span className="news-toggle-mark" aria-hidden="true">
                           {isExpanded ? "-" : "+"}
                         </span>
