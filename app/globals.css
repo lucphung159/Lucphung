@@ -140,8 +140,8 @@ a:hover {
 .news-title-button {
   width: 100%;
   display: grid;
-  grid-template-columns: 8rem 8rem minmax(0, 1fr) 2rem;
-  column-gap: 1rem;
+  grid-template-columns: 8rem 5.75rem minmax(0, 1fr) 2rem;
+  column-gap: 0.75rem;
   align-items: center;
   border: 1px solid transparent;
   border-radius: 6px;
@@ -195,7 +195,7 @@ a:hover {
 
 .news-body {
   margin: 0.35rem 0 1rem;
-  padding: 0 2rem 0 18rem;
+  padding: 0 2rem 0 15.25rem;
   color: #374151;
   line-height: 1.75;
 }
