@@ -140,7 +140,7 @@ a:hover {
 .news-title-button {
   width: 100%;
   display: grid;
-  grid-template-columns: max-content minmax(0, 1fr) max-content;
+  grid-template-columns: 8.5rem minmax(0, 1fr) 1.25rem;
   gap: 1rem;
   align-items: center;
   border: 1px solid transparent;
@@ -167,24 +167,29 @@ a:hover {
 }
 
 .news-title-wrap {
+  display: grid;
+  grid-template-columns: 5.25rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: center;
   min-width: 0;
 }
 
 .news-title {
   color: #1f2937;
   font-weight: 700;
-  margin-left: 0.45rem;
+  min-width: 0;
 }
 
 .news-toggle-mark {
   color: var(--muted);
   font-size: 1rem;
   font-weight: 700;
+  text-align: center;
 }
 
 .news-body {
   margin: 0.35rem 0 1rem;
-  padding: 0 0.75rem 0 8.65rem;
+  padding: 0 0.75rem 0 15.5rem;
   color: #374151;
   line-height: 1.75;
 }
@@ -385,6 +390,11 @@ a:hover {
 
   .news-date {
     grid-column: 1 / -1;
+  }
+
+  .news-title-wrap {
+    grid-template-columns: max-content minmax(0, 1fr);
+    gap: 0.6rem;
   }
 
   .news-body {
