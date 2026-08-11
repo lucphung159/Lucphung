@@ -168,6 +168,35 @@ function getNewsTitle(text: string) {
   return fallback.length > 140 ? `${fallback.slice(0, 137).trim()}...` : fallback || "News update";
 }
 
+function getNewsBody(text: string) {
+  const withoutLeadingHeading = text.replace(
+    /^\s*<(?:p|div)?[^>]*>\s*<(?:strong|b|h[1-6])[^>]*>.*?<\/(?:strong|b|h[1-6])>\s*(?:<\/(?:p|div)>)?\s*/i,
+    "",
+  );
+
+  if (withoutLeadingHeading !== text && plainText(withoutLeadingHeading)) {
+    return withoutLeadingHeading;
+  }
+
+  const parts = text.split(/(\/n|\n|<br\s*\/?>|<\/p>|<\/div>)/i);
+  if (parts.length <= 1) return text;
+
+  const firstContentIndex = parts.findIndex((part) => plainText(part));
+  if (firstContentIndex === -1) return text;
+
+  let nextContentIndex = -1;
+  for (let index = firstContentIndex + 1; index < parts.length; index += 1) {
+    if (plainText(parts[index])) {
+      nextContentIndex = index;
+      break;
+    }
+  }
+
+  if (nextContentIndex === -1) return text;
+
+  return parts.slice(nextContentIndex).join("").trim() || text;
+}
+
 function MemberRole({ role }: { role: string }) {
   const parts = splitMemberRole(role);
 
@@ -330,7 +359,7 @@ export function TabContent({
                         <div className="news-body">
                           <div
                             className="rich-text-content"
-                            dangerouslySetInnerHTML={richTextHtml(item.text)}
+                            dangerouslySetInnerHTML={richTextHtml(getNewsBody(item.text))}
                           />
                         </div>
                       )}
